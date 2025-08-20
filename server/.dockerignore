@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+
+# 빌드 산출물
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+*.env
+# Go modules 캐시 / 빌드 캐시
+pkg/
+*.modcache/
+*.cache/
+*.tmp
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Docker 자체
+Dockerfile
+.dockerignore
+
+_volume/_logs/*
