@@ -31,3 +31,28 @@ services:
         limits:
           cpus: "1"
           memory: 1024M
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    env_file: ".run.env"
+    command: tunnel --no-autoupdate run
+    volumes:
+      - ./.run.env/:/.run.env
+      - ./_volume/_logs/fatcat_tunnel:/logs
+    networks:
+      - webapp
+      - common
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: any # no always policy on swarm mode
+        delay: 5s
+        max_attempts: 3
+        window: 60s
+      resources:
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+        limits:
+          cpus: "1"
+          memory: 1024M
