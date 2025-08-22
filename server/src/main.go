@@ -31,6 +31,7 @@ func main() {
 	})
 
 	root.GET("/health", func(ctx *gin.Context) {
+		ctx.Header("Access-Control-Allow-Origin", "*")
 		ctx.JSON(http.StatusOK, gin.H{
 			"message": "ok",
 		})
