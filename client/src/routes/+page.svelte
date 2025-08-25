@@ -6,20 +6,23 @@
 
 	$effect(() => {
 		console.log('mounted');
-		return () => console.info('cleaned');
+		const socket = new WebSocket('ws://localhost:3010/ws');
+		socket.onopen = (e) => socket.send('Hello Server!');
+		socket.onmessage = (e) => {
+			payload = e.data;
+		};
+		return () => {
+			console.info('cleaned');
+			socket.close();
+		};
 	});
 	const onCount = () => count++;
 	let { data }: PageProps = $props();
 
-	const socket = new WebSocket('ws://localhost:3010/ws');
-	socket.addEventListener('open', function (event) {
-		socket.send('Hello Server!');
-	});
-
-	socket.addEventListener('message', function (event) {
-		console.log('Message from server ', event.data);
-		payload = event.data;
-	});
+	// socket.addEventListener('message', function (event) {
+	// 	console.log('Message from server ', event.data);
+	// 	payload = event.data;
+	// });
 </script>
 
 <Button class="my-4 border-2 border-blue-400" onclick={onCount}>Click me</Button>
