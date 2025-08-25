@@ -1,11 +1,10 @@
 package main
 
 import (
-	// "fmt"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
-	// "time"
 
 	"github.com/fatcat/auth"
 	"github.com/gin-gonic/gin"
@@ -35,7 +34,7 @@ func main() {
 
 	// @dev init connection manager instance on startup
 	sc := &auth.SocketManager{
-		List:      make(map[uint64]auth.ClientContext),
+		List:      make(map[int]*auth.ClientContext),
 		Count:     0,
 		MaxClient: 500,
 	}
@@ -88,9 +87,7 @@ func main() {
 		}
 		client := sc.List[sc.Count]
 
-		// socketId := []byte(client.SocketID)
-		message := append(payload)
-		log.Println(string(message))
+		message := append(payload, []byte("with id: "+fmt.Sprint(client.SocketID))...)
 		log.Println("socket id: ", client.SocketID)
 		wErr := connection.WriteMessage(mt, message)
 
