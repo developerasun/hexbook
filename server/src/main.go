@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
 	"log"
 	"net/http"
 	"os"
-	"sync"
-	"time"
+	// "time"
 
+	"github.com/fatcat/auth"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 
@@ -16,7 +16,6 @@ import (
 
 const (
 	ROOT = ""
-	PORT = 3010
 )
 
 var upgrader = websocket.Upgrader{
@@ -29,18 +28,16 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-type SocketConnection struct {
-	list  map[int]*websocket.Conn
-	count uint
-}
-
 func main() {
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
 	hasError := env.Load("../.run.env")
-	sc := &SocketConnection{
-		list:  make(map[int]*websocket.Conn),
-		count: 0,
+
+	// @dev init connection manager instance on startup
+	sc := &auth.SocketManager{
+		List:      make(map[uint64]auth.ClientContext),
+		Count:     0,
+		MaxClient: 500,
 	}
 
 	if hasError != nil {
@@ -70,36 +67,38 @@ func main() {
 			return
 		}
 
-		var rwMutex sync.RWMutex
-		rwMutex.Lock()
-		sc.list[int(sc.count)] = conn
-		sc.count++
-		rwMutex.Unlock()
+		result := make(chan *websocket.Conn)
 
-		log.Println("mutex unlocked and socket connected")
+		go func() {
+			hErr := auth.HandleConnection(sc, conn)
+			if hErr != nil {
+				log.Println(hErr.Error())
+				ctx.AbortWithError(http.StatusInternalServerError, hErr)
+				return
+			}
+			result <- conn
+		}()
+		connection := <-result
 
-		// for {
-		messageType, payload, rErr := conn.ReadMessage()
-
+		mt, payload, rErr := connection.ReadMessage()
 		if rErr != nil {
 			log.Println(rErr.Error())
 			ctx.AbortWithError(http.StatusInternalServerError, rErr)
 			return
 		}
+		client := sc.List[sc.Count]
 
-		customMessage := []byte(fmt.Sprintf(": woof woof: %v", sc.count))
+		// socketId := []byte(client.SocketID)
+		message := append(payload)
+		log.Println(string(message))
+		log.Println("socket id: ", client.SocketID)
+		wErr := connection.WriteMessage(mt, message)
 
-		wErr := conn.WriteMessage(messageType, append(payload, customMessage...))
 		if wErr != nil {
 			log.Println(wErr.Error())
 			ctx.AbortWithError(http.StatusInternalServerError, wErr)
 			return
 		}
-
-		secondMessage := []byte(fmt.Sprintf(": meow meow: %v", sc.count))
-		time.Sleep(5 * time.Second)
-
-		conn.WriteMessage(messageType, secondMessage)
 	})
 
 	router.Run(":" + os.Getenv("PORT"))
