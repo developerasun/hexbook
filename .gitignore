@@ -36,3 +36,6 @@ bin
 # .vscode/
 
 todo.md
+
+# sqlite db
+*.db
