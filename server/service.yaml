@@ -37,7 +37,7 @@ services:
     command: tunnel --no-autoupdate run
     volumes:
       - ./.run.env/:/.run.env
-      - ./_volume/_logs/fatcat_tunnel:/logs
+      # - ./_volume/_logs/fatcat_tunnel:/logs
     networks:
       - webapp
       - common
