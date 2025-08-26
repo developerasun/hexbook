@@ -1,5 +1,16 @@
 # fatcat
 
+## client
+
+build image with buildx.
+
+```sh
+# install if not available
+sudo apt-get install docker-buildx-plugin
+
+docker buildx version
+```
+
 ## server
 
 _dev_
