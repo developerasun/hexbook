@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/fatcat/internal/auth"
+	"github.com/fatcat/internal/database"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 
@@ -30,7 +31,16 @@ var upgrader = websocket.Upgrader{
 func main() {
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
+
 	hasError := env.Load("../.run.env")
+	if hasError != nil {
+		log.Fatalln("main.go: can't load secrets correctly", hasError.Error())
+		return
+	}
+	log.Println("main.go: env loaded")
+
+	schema.ConnectAndMigrate()
+	log.Println("main.go: database connected")
 
 	// @dev init connection manager instance on startup
 	sc := &auth.SocketManager{
@@ -38,11 +48,7 @@ func main() {
 		Count:     0,
 		MaxClient: 500,
 	}
-
-	if hasError != nil {
-		log.Fatalln("main.go: can't load secrets correctly", hasError.Error())
-		return
-	}
+	log.Println("main.go: socket manager initialized")
 
 	root := router.Group(ROOT)
 
@@ -99,4 +105,5 @@ func main() {
 	})
 
 	router.Run(":" + os.Getenv("PORT"))
+	log.Println("main.go: router started")
 }
