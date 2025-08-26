@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_WS_ENDPOINT } from '$env/static/public';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import type { PageProps } from './$types';
 	let count = $state(0);
@@ -6,7 +7,7 @@
 
 	$effect(() => {
 		console.log('mounted');
-		const socket = new WebSocket('ws://localhost:3010/ws');
+		const socket = new WebSocket(PUBLIC_WS_ENDPOINT);
 		socket.onopen = (e) => socket.send('Hello Server!');
 		socket.onmessage = (e) => {
 			payload = e.data;
@@ -18,11 +19,6 @@
 	});
 	const onCount = () => count++;
 	let { data }: PageProps = $props();
-
-	// socket.addEventListener('message', function (event) {
-	// 	console.log('Message from server ', event.data);
-	// 	payload = event.data;
-	// });
 </script>
 
 <Button class="my-4 border-2 border-blue-400" onclick={onCount}>Click me</Button>
