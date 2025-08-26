@@ -1,2 +1,2 @@
 # enable hot reload
-cd src && air
+cd cmd && air
