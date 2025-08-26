@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/fatcat/auth"
+	"github.com/fatcat/internal/auth"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 
