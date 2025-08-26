@@ -31,7 +31,7 @@ services:
         limits:
           cpus: "1"
           memory: 1024M
-  tunnel:
+  servertunnel:
     image: cloudflare/cloudflared:latest
     env_file: ".run.env"
     command: tunnel --no-autoupdate run
