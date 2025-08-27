@@ -38,20 +38,38 @@ type User struct {
 
 type Cat struct {
 	gorm.Model
-	UserID       int
-	WeightJounal []WeightJounal `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Name         string         `gorm:"type:text;not null;default:loaf-and-paw" json:"name"`
-	Age          float64        `gorm:"type:real;not null;default:1" json:"age"`
-	Breed        string         `gorm:"type:text;not null;default:mixed" json:"breed"`
-	Weight       float64        `gorm:"type:real;not null;default:1" json:"weight"`
-	Picture      string         `gorm:"type:text" json:"picture"`
+	UserID         int
+	WeightJounal   []WeightJounal   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	ExerciseJounal []ExerciseJounal `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	MealJounal     []MealJounal     `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Name           string           `gorm:"type:text;not null;default:loaf-and-paw" json:"name"`
+	Age            float64          `gorm:"type:real;not null;default:1" json:"age"`
+	Breed          string           `gorm:"type:text;not null;default:mixed" json:"breed"`
+	Weight         float64          `gorm:"type:real;not null;default:1" json:"weight"`
+	Picture        string           `gorm:"type:text" json:"picture"`
 }
 
 type WeightJounal struct {
 	gorm.Model
-	CatID    int
-	Amount   float64 `gorm:"type:real;not null;default:1" json:"amount"`
-	Activity string  `gorm:"type:text;not null;default:play" json:"Activity"`
+	CatID       int
+	Amount      float64 `gorm:"type:real;not null;default:1" json:"amount"`
+	Description string  `gorm:"type:text;not null;default:okay-condition" json:"description"`
+}
+
+type ExerciseJounal struct {
+	gorm.Model
+	CatID       int
+	Hour        float64 `gorm:"type:real;not null;default:0.5" json:"hour"`
+	Location    string  `gorm:"type:text;not null;default:house" json:"location"`
+	Description string  `gorm:"type:text;not null;default:cat wheel" json:"description"`
+}
+
+type MealJounal struct {
+	gorm.Model
+	CatID       int
+	Hour        float64 `gorm:"type:real;not null;default:0.5" json:"hour"`
+	Menu        float64 `gorm:"type:real;not null;default:cat food, water, churu" json:"menu"`
+	Description string  `gorm:"type:text;not null;default:breakfast" json:"description"`
 }
 
 type Membership struct {
