@@ -39,3 +39,5 @@ todo.md
 
 # sqlite db
 *.db
+server/docs/swagger.json
+server/docs/swagger.yaml
