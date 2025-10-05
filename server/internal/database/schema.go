@@ -18,7 +18,8 @@ func ConnectAndMigrate() *gorm.DB {
 	}
 
 	// TODO check production migration
-	aErr := db.AutoMigrate(&User{}, &Cat{}, &WeightJounal{}, &Membership{})
+	aErr := db.AutoMigrate(
+		&User{}, &Cat{}, &WeightJounal{}, &ExerciseJounal{}, &MealJounal{}, &Membership{})
 
 	if aErr != nil {
 		error := errors.New("GetConnection: unable to migrate schema for" + MAIN_DATABASE + aErr.Error())
@@ -68,7 +69,7 @@ type MealJounal struct {
 	gorm.Model
 	CatID       int
 	Hour        float64 `gorm:"type:real;not null;default:0.5" json:"hour"`
-	Menu        float64 `gorm:"type:real;not null;default:cat food, water, churu" json:"menu"`
+	Menu        string  `gorm:"type:text;not null;default:cat food, water, churu" json:"menu"`
 	Description string  `gorm:"type:text;not null;default:breakfast" json:"description"`
 }
 
