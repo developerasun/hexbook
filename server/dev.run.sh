@@ -1,2 +1,2 @@
 # enable hot reload
-cd cmd && air
+air -c ./.air.toml
