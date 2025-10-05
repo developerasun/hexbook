@@ -64,6 +64,7 @@ func main() {
 
 	// TODO replace to controller/service/repository dir
 	root.GET("/health", controller.Health)
+	root.GET("/fetch", controller.FetchDummyData)
 	root.GET("/ws", func(ctx *gin.Context) {
 		conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 
