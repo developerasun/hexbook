@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/fatcat/internal/auth"
 	"github.com/fatcat/internal/constant"
@@ -38,7 +39,16 @@ func main() {
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
 
-	hasError := env.Load("../.run.env")
+	dir, gErr := os.Getwd()
+
+	if gErr != nil {
+		log.Fatalln(gErr.Error())
+	}
+
+	envPath := strings.Join([]string{dir, "/", ".run.env"}, "")
+	log.Println("main.go: envPath: " + envPath)
+
+	hasError := env.Load(envPath)
 	if hasError != nil {
 		log.Fatalln("main.go: can't load secrets correctly", hasError.Error())
 		return
