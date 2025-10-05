@@ -7,15 +7,17 @@ import (
 	"os"
 
 	"github.com/fatcat/internal/auth"
+	"github.com/fatcat/internal/constant"
+	"github.com/fatcat/internal/controller"
 	"github.com/fatcat/internal/database"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 
-	env "github.com/joho/godotenv"
-)
+	docs "github.com/fatcat/docs"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
-const (
-	ROOT = ""
+	env "github.com/joho/godotenv"
 )
 
 var upgrader = websocket.Upgrader{
@@ -28,6 +30,10 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+// @title Fatcat API
+// @version 1.0
+// @description Fatcat backend API documentation
+// @BasePath /
 func main() {
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
@@ -46,23 +52,18 @@ func main() {
 	sc := &auth.SocketManager{
 		List:      make(map[int]*auth.ClientContext),
 		Count:     0,
-		MaxClient: 500,
+		MaxClient: constant.MAX_SOCKET_CLIENT,
 	}
 	log.Println("main.go: socket manager initialized")
 
-	root := router.Group(ROOT)
+	root := router.Group(constant.ROUTE_ROOT)
 
 	root.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusNoContent, gin.H{})
 	})
 
-	root.GET("/health", func(ctx *gin.Context) {
-		ctx.Header("Access-Control-Allow-Origin", "*")
-		ctx.JSON(http.StatusOK, gin.H{
-			"message": "ok",
-		})
-	})
-
+	// TODO replace to controller/service/repository dir
+	root.GET("/health", controller.Health)
 	root.GET("/ws", func(ctx *gin.Context) {
 		conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 
@@ -103,6 +104,9 @@ func main() {
 			return
 		}
 	})
+
+	docs.SwaggerInfo.BasePath = ""
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	router.Run(":" + os.Getenv("PORT"))
 	log.Println("main.go: router started")
