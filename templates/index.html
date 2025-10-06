@@ -12,6 +12,7 @@
     type="text/css"
   />
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"></script>
 
   <!-- BODY -->
   <body id="body" class="max-w-3/4 mx-auto">
@@ -50,7 +51,17 @@
             excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
             a id nisi.
           </p>
-          <button class="btn btn-primary">Get Started</button>
+          <button
+            class="btn btn-primary"
+            hx-get="/clicked"
+            hx-target="#click-result"
+          >
+            Get Started
+          </button>
+        </div>
+        <div>
+          show htmx response below
+          <div id="click-result"></div>
         </div>
       </div>
     </div>

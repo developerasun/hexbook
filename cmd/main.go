@@ -135,6 +135,13 @@ func main() {
 		})
 	})
 
+	// @dev htmx test
+	router.GET("/clicked", func(ctx *gin.Context) {
+		_html := "<div>hello htmx there</div>"
+		ctx.Writer.WriteHeader(http.StatusOK)
+		ctx.Writer.Write([]byte(_html))
+	})
+
 	router.Run(":" + os.Getenv("PORT"))
 	log.Println("main.go: router started")
 }
