@@ -1,0 +1,18 @@
+<html>
+  <link rel="stylesheet" href="../assets/global.css" />
+  <link rel="shortcut icon" href="../assets/favicon.ico" type="image/x-icon" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <body id="body">
+    <main>
+      <h1>{{ .title }}</h1>
+      {{ if .title }} has title {{ else }} no title {{ end }}
+      <h1 class="text-3xl font-bold bg-amber-300">Hello world!</h1>
+
+      {{ range .data }}
+      <p class="py-2">{{ .Name }} is {{ .Age }} years old</p>
+      {{ end }}
+      <!-- <img src="../assets//logo.jpg" alt="logo" /> -->
+    </main>
+  </body>
+</html>

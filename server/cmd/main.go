@@ -119,6 +119,22 @@ func main() {
 	docs.SwaggerInfo.BasePath = ""
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
+	router.Static("/assets", "./assets")
+	router.LoadHTMLGlob("templates/*")
+	router.GET("/check", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "index.html", gin.H{
+			"title": "Main Website",
+			"data": []struct {
+				Name string
+				Age  uint
+			}{
+				{Name: "jake", Age: 31},
+				{Name: "brian", Age: 22},
+				{Name: "smith", Age: 14},
+			},
+		})
+	})
+
 	router.Run(":" + os.Getenv("PORT"))
 	log.Println("main.go: router started")
 }
