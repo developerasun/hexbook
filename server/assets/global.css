@@ -1,4 +1,5 @@
-#body {
-  background-color: black;
-  color: white;
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: halloween;
 }
