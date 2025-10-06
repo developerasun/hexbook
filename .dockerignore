@@ -1,6 +1,8 @@
 # Git
 .git
 .gitignore
+.github
+.gitmessage.txt
 
 # 빌드 산출물
 bin/
@@ -30,9 +32,11 @@ pkg/
 # OS-specific
 .DS_Store
 Thumbs.db
-
 # Docker 자체
 Dockerfile
 .dockerignore
 
 _volume/_logs/*
+*.db
+*.sh
+*.md
