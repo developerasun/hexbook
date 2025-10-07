@@ -2,15 +2,13 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 	"strings"
 
-	api "github.com/fatcat/internal/api"
+	apiController "github.com/fatcat/internal/api"
 	"github.com/fatcat/internal/constant"
 	"github.com/fatcat/internal/database"
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
 
 	docs "github.com/fatcat/docs"
 	swaggerfiles "github.com/swaggo/files"
@@ -19,24 +17,11 @@ import (
 	env "github.com/joho/godotenv"
 )
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool {
-		whitelist := os.Getenv("WHITELIST")
-		log.Println(r.Host, whitelist, "is whitelisted: ", r.Host == whitelist)
-		return r.Host == whitelist
-	},
-}
-
 // @title Fatcat API
 // @version 1.0
 // @description Fatcat backend API documentation
 // @BasePath /
 func main() {
-	router := gin.Default()
-	router.SetTrustedProxies(nil)
-
 	dir, gErr := os.Getwd()
 
 	if gErr != nil {
@@ -56,19 +41,24 @@ func main() {
 	schema.ConnectAndMigrate()
 	log.Println("main.go: database connected")
 
+	log.Println("main.go: start initiating gin server")
+	router := gin.Default()
+	router.SetTrustedProxies(nil)
+
 	docs.SwaggerInfo.BasePath = ""
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	router.Static("/assets", "./assets")
 	router.LoadHTMLGlob("templates/*")
 
 	root := router.Group(constant.ROUTE_ROOT)
-	root.GET("/", api.ViewMainPage)
-	root.GET("/health", api.Health)
-	root.GET("/fetch", api.FetchDummyData)
-	root.GET("/ws", api.ConnectWebsocket)
+	root.GET("/", apiController.RenderMainPage)
 
+	api := router.Group(constant.ROUTE_API)
+	api.GET("/health", apiController.Health)
+	api.GET("/fetch", apiController.FetchDummyData)
+	api.GET("/ws", apiController.ConnectWebsocket)
 	// @dev htmx test
-	router.GET("/clicked", api.ViewClicked)
+	api.GET("/clicked", apiController.RenderClicked)
 
 	router.Run(":" + os.Getenv("PORT"))
 	log.Println("main.go: router started")
