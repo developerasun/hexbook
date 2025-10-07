@@ -19,13 +19,13 @@ const docTemplate = `{
             "get": {
                 "description": "show main page, returning html",
                 "tags": [
-                    "api"
+                    "view"
                 ],
                 "summary": "show main page, returning html",
                 "responses": {}
             }
         },
-        "/clicked": {
+        "/api/clicked": {
             "get": {
                 "description": "testing htmx get method with swapping response html",
                 "tags": [
@@ -35,53 +35,47 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/fetch": {
+        "/api/fetch": {
             "get": {
                 "description": "Fetch data from jsonplaceholder",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "dev"
+                    "api"
                 ],
                 "summary": "Fetch data from jsonplaceholder",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/internal_api.FetchDummyDataResponse"
                         }
                     }
                 }
             }
         },
-        "/health": {
+        "/api/health": {
             "get": {
                 "description": "Get server health status",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "dev"
+                    "api"
                 ],
                 "summary": "Show the health status",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/internal_api.HealthResponse"
                         }
                     }
                 }
             }
         },
-        "/ws": {
+        "/api/ws": {
             "get": {
                 "description": "upgrade header from http to ws",
                 "tags": [
@@ -89,6 +83,27 @@ const docTemplate = `{
                 ],
                 "summary": "upgrade header from http to ws",
                 "responses": {}
+            }
+        }
+    },
+    "definitions": {
+        "internal_api.FetchDummyDataResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "internal_api.HealthResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
             }
         }
     }
