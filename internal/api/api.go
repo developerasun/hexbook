@@ -18,24 +18,24 @@ import (
 // Health godoc
 // @Summary Show the health status
 // @Description Get server health status
-// @Tags dev
+// @Tags api
 // @Produce json
-// @Success 200 {object} map[string]string
-// @Router /health [get]
+// @Success 200 {object} HealthResponse
+// @Router /api/health [get]
 func Health(ctx *gin.Context) {
 	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.JSON(http.StatusOK, gin.H{
-		"message": "ok",
+	ctx.JSON(http.StatusOK, HealthResponse{
+		Message: "ok",
 	})
 }
 
 // FetchDummyData godoc
 // @Summary Fetch data from jsonplaceholder
 // @Description Fetch data from jsonplaceholder
-// @Tags dev
+// @Tags api
 // @Produce json
-// @Success 200 {object} map[string]string
-// @Router /fetch [get]
+// @Success 200 {object} FetchDummyDataResponse
+// @Router /api/fetch [get]
 func FetchDummyData(ctx *gin.Context) {
 	resp, gErr := http.Get("https://jsonplaceholder.typicode.com/todos/1")
 	if gErr != nil {
@@ -49,8 +49,8 @@ func FetchDummyData(ctx *gin.Context) {
 		log.Fatalln(rErr.Error())
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"data": json.RawMessage(body),
+	ctx.JSON(http.StatusOK, FetchDummyDataResponse{
+		Data: json.RawMessage(body),
 	})
 }
 
@@ -58,7 +58,7 @@ func FetchDummyData(ctx *gin.Context) {
 // @Summary upgrade header from http to ws
 // @Description upgrade header from http to ws
 // @Tags api
-// @Router /ws [get]
+// @Router /api/ws [get]
 func ConnectWebsocket(ctx *gin.Context) {
 	var upgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
@@ -118,12 +118,12 @@ func ConnectWebsocket(ctx *gin.Context) {
 	}
 }
 
-// ViewMainPage godoc
+// RenderMainPage godoc
 // @Summary show main page, returning html
 // @Description show main page, returning html
-// @Tags api
+// @Tags view
 // @Router / [get]
-func ViewMainPage(ctx *gin.Context) {
+func RenderMainPage(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "index.html", gin.H{
 		"title": "Main Website",
 		"data": []struct {
@@ -137,12 +137,12 @@ func ViewMainPage(ctx *gin.Context) {
 	})
 }
 
-// ViewClicked godoc
+// RenderClicked godoc
 // @Summary testing htmx get method with swapping response html
 // @Description testing htmx get method with swapping response html
 // @Tags api
-// @Router /clicked [get]
-func ViewClicked(ctx *gin.Context) {
+// @Router /api/clicked [get]
+func RenderClicked(ctx *gin.Context) {
 	_html := "<div>hello htmx there</div>"
 	ctx.Writer.WriteHeader(http.StatusOK)
 	ctx.Writer.Write([]byte(_html))
