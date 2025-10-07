@@ -15,6 +15,26 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/": {
+            "get": {
+                "description": "show main page, returning html",
+                "tags": [
+                    "api"
+                ],
+                "summary": "show main page, returning html",
+                "responses": {}
+            }
+        },
+        "/clicked": {
+            "get": {
+                "description": "testing htmx get method with swapping response html",
+                "tags": [
+                    "api"
+                ],
+                "summary": "testing htmx get method with swapping response html",
+                "responses": {}
+            }
+        },
         "/fetch": {
             "get": {
                 "description": "Fetch data from jsonplaceholder",
@@ -22,7 +42,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "health"
+                    "dev"
                 ],
                 "summary": "Fetch data from jsonplaceholder",
                 "responses": {
@@ -45,7 +65,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "health"
+                    "dev"
                 ],
                 "summary": "Show the health status",
                 "responses": {
@@ -59,6 +79,16 @@ const docTemplate = `{
                         }
                     }
                 }
+            }
+        },
+        "/ws": {
+            "get": {
+                "description": "upgrade header from http to ws",
+                "tags": [
+                    "api"
+                ],
+                "summary": "upgrade header from http to ws",
+                "responses": {}
             }
         }
     }
