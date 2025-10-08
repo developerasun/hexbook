@@ -48,6 +48,7 @@ func validateDuplicate(address string) bool {
 
 /*
 @docs https://dev-docs.dcentwallet.com/dynamic-link/eip-681-transaction-payment-request#eip681-dynamic-link-format
+TODO check metamask qrcode not working
 */
 func makeResourceEip681Compatible(address string) string {
 	// @dev ethereum mainnet, 0.001 ether
