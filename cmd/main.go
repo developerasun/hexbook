@@ -43,7 +43,16 @@ func main() {
 
 	docs.SwaggerInfo.BasePath = ""
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	router.Static("/assets", "./assets")
+
+	wd, gErr := os.Getwd()
+
+	if gErr != nil {
+		log.Fatalln(gErr.Error())
+	}
+
+	staticPath := strings.Join([]string{wd, "assets"}, "/")
+
+	router.Static("/assets", staticPath)
 	router.LoadHTMLGlob("templates/*")
 
 	root := router.Group(constant.ROUTE_ROOT)
