@@ -52,23 +52,35 @@
 
     <!-- MAIN -->
     <main class="h-[78vh] border-1">
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend">Enter your wallet address</legend>
-        <input
-          type="text"
-          class="input-md"
-          placeholder="0xD2e203cd5df6756EeE316493F702249423adCae7"
-        />
-        <p class="label">evm only for now</p>
-      </fieldset>
-
-      <button class="btn btn-primary" hx-get="/api/clicked" hx-target="#qrcode">
-        Convert
-      </button>
-      <div>
-        show QRcode below
-        <div id="qrcode"></div>
-      </div>
+      <form
+        class="flex flex-col flex-nowrap justify-center items-center h-[100%] gap-6"
+        hx-post="/api/qrcode"
+        hx-include="#wallet"
+        hx-target="#qrcode"
+      >
+        <fieldset class="fieldset px-6">
+          <legend class="fieldset-legend text-center text-2xl">
+            Enter your wallet address
+          </legend>
+          <input
+            id="wallet"
+            name="wallet"
+            type="text"
+            class="input-lg"
+            placeholder="0xD2e203cd5df6756EeE316493F702249423adCae7"
+            required
+          />
+          <p class="label">evm only for now</p>
+          <div class="my-2 mx-auto text-center">
+            Your QR code shows up below
+            <div
+              id="qrcode"
+              class="h-[256px] w-[256px] border-1 rounded-md"
+            ></div>
+          </div>
+          <button class="btn btn-primary" type="submit">Convert</button>
+        </fieldset>
+      </form>
     </main>
 
     <!-- FOOTER -->
