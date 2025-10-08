@@ -10,6 +10,8 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
+
 	constant "github.com/hexbook/internal/constant"
 	qrcode "github.com/skip2/go-qrcode"
 )
@@ -55,4 +57,36 @@ func TestAddressPrefix(t *testing.T) {
 	}
 
 	log.Println("sliced: ", after)
+}
+
+func TestExistingResourceAtPath(t *testing.T) {
+	assert := assert.New(t)
+	mightBeExisiting := ".gitkeep"
+
+	wd, gErr := os.Getwd()
+
+	if gErr != nil {
+		log.Println(gErr.Error())
+		t.FailNow()
+	}
+
+	root := path.Dir(wd)
+	targetPath := strings.Join([]string{root, "assets", "qrcode"}, "/")
+	entries, rErr := os.ReadDir(targetPath)
+
+	if rErr != nil {
+		t.Log("read directory path failed: ", targetPath)
+		t.FailNow()
+	}
+
+	var isExisting bool = false
+
+	for _, v := range entries {
+		if v.Name() == mightBeExisiting {
+			isExisting = true
+			break
+		}
+	}
+
+	assert.Equal(isExisting, true)
 }
