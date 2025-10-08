@@ -52,8 +52,7 @@ func main() {
 	api := router.Group(constant.ROUTE_API)
 	api.GET("/health", apiController.Health)
 	api.GET("/fetch", apiController.FetchDummyData)
-	// @dev htmx test
-	api.GET("/clicked", apiController.RenderClicked)
+	api.POST("/qrcode", apiController.RenderQrCode)
 
 	router.Run(":" + os.Getenv("PORT"))
 	log.Println("main.go: router started")

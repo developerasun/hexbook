@@ -2,11 +2,13 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	pkg "github.com/hexbook/pkg"
 )
 
 // Health godoc
@@ -71,9 +73,17 @@ func RenderMainPage(ctx *gin.Context) {
 // @Summary testing htmx get method with swapping response html
 // @Description testing htmx get method with swapping response html
 // @Tags api
-// @Router /api/clicked [get]
-func RenderClicked(ctx *gin.Context) {
-	_html := "<div>hello htmx there</div>"
+// @Router /api/qrcode [get]
+func RenderQrCode(ctx *gin.Context) {
+	wallet := ctx.PostForm("wallet")
+
+	if len(wallet) == 0 {
+		log.Fatalln("RenderQrCode:len(wallet): empty wallet from client")
+	}
+
+	filename := pkg.GenerateQrCode(wallet)
+
+	_html := fmt.Sprintf(`<div><img src="%s" alt="qrcode"/></div>`, "/assets/qrcode/"+filename)
 	ctx.Writer.WriteHeader(http.StatusOK)
 	ctx.Writer.Write([]byte(_html))
 }
