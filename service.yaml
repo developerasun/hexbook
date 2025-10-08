@@ -11,7 +11,7 @@ services:
     ports:
       - "3010:3010"
     volumes:
-      - ./.run.env:/.run.env
+      - ./.run.env:/hexbook/.run.env
       - ./_volume/_logs/hexbook_backend:/logs
     networks:
       - webapp
