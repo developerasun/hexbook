@@ -1,9 +1,10 @@
 package test
 
 import (
-	pkg "github.com/fatcat/pkg"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	pkg "github.com/hexbook/pkg"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDummy(t *testing.T) {

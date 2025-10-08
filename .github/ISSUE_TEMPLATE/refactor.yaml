@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Fatcat refactoring request
+        Hexbook refactoring request
   - type: textarea
     id: what-happened
     attributes:

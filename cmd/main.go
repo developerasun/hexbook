@@ -5,21 +5,20 @@ import (
 	"os"
 	"strings"
 
-	apiController "github.com/fatcat/internal/api"
-	"github.com/fatcat/internal/constant"
-	"github.com/fatcat/internal/database"
 	"github.com/gin-gonic/gin"
+	apiController "github.com/hexbook/internal/api"
+	"github.com/hexbook/internal/constant"
 
-	docs "github.com/fatcat/docs"
+	docs "github.com/hexbook/docs"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	env "github.com/joho/godotenv"
 )
 
-// @title Fatcat API
+// @title hexbook API
 // @version 1.0
-// @description Fatcat backend API documentation
+// @description hexbook backend API documentation
 // @BasePath /
 func main() {
 	dir, gErr := os.Getwd()
@@ -38,9 +37,6 @@ func main() {
 	}
 	log.Println("main.go: env loaded")
 
-	schema.ConnectAndMigrate()
-	log.Println("main.go: database connected")
-
 	log.Println("main.go: start initiating gin server")
 	router := gin.Default()
 	router.SetTrustedProxies(nil)
@@ -56,7 +52,6 @@ func main() {
 	api := router.Group(constant.ROUTE_API)
 	api.GET("/health", apiController.Health)
 	api.GET("/fetch", apiController.FetchDummyData)
-	api.GET("/ws", apiController.ConnectWebsocket)
 	// @dev htmx test
 	api.GET("/clicked", apiController.RenderClicked)
 

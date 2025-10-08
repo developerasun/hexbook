@@ -1,4 +1,4 @@
-module github.com/fatcat
+module github.com/hexbook
 
 go 1.25.0
 

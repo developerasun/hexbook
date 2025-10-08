@@ -1,4 +1,4 @@
-# fatcat
+# hexbook
 
 ## client
 
@@ -19,5 +19,5 @@ run for local module.
 
 ```sh
 # before publishing
-go mod edit -replace github.com/fatcat/auth=./auth
+go mod edit -replace github.com/hexbook/auth=./auth
 ```

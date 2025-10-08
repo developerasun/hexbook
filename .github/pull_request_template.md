@@ -1,6 +1,6 @@
 # Pull request format
 
-This is a PR format for Fatcat project.
+This is a PR format for Hexbook project.
 
 ## What's changed
 

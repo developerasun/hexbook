@@ -2,17 +2,11 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"os"
-
-	"github.com/fatcat/internal/auth"
-	"github.com/fatcat/internal/constant"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
 )
 
 // Health godoc
@@ -52,70 +46,6 @@ func FetchDummyData(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, FetchDummyDataResponse{
 		Data: json.RawMessage(body),
 	})
-}
-
-// ConnectWebsocket godoc
-// @Summary upgrade header from http to ws
-// @Description upgrade header from http to ws
-// @Tags api
-// @Router /api/ws [get]
-func ConnectWebsocket(ctx *gin.Context) {
-	var upgrader = websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-		CheckOrigin: func(r *http.Request) bool {
-			whitelist := os.Getenv("WHITELIST")
-			log.Println(r.Host, whitelist, "is whitelisted: ", r.Host == whitelist)
-			return r.Host == whitelist
-		},
-	}
-
-	// @dev init connection manager instance on startup
-	sc := &auth.SocketManager{
-		List:      make(map[int]*auth.ClientContext),
-		Count:     0,
-		MaxClient: constant.MAX_SOCKET_CLIENT,
-	}
-	log.Println("api.go: socket manager initialized")
-
-	conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
-
-	if err != nil {
-		log.Println(err.Error())
-		ctx.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	result := make(chan *websocket.Conn)
-
-	go func() {
-		hErr := auth.HandleConnection(sc, conn)
-		if hErr != nil {
-			log.Println(hErr.Error())
-			ctx.AbortWithError(http.StatusInternalServerError, hErr)
-			return
-		}
-		result <- conn
-	}()
-	connection := <-result
-
-	mt, payload, rErr := connection.ReadMessage()
-	if rErr != nil {
-		log.Println(rErr.Error())
-		ctx.AbortWithError(http.StatusInternalServerError, rErr)
-		return
-	}
-	client := sc.List[sc.Count]
-
-	message := append(payload, []byte("with id: "+fmt.Sprint(client.SocketID))...)
-	log.Println("socket id: ", client.SocketID)
-	wErr := connection.WriteMessage(mt, message)
-
-	if wErr != nil {
-		log.Println(wErr.Error())
-		ctx.AbortWithError(http.StatusInternalServerError, wErr)
-		return
-	}
 }
 
 // RenderMainPage godoc
