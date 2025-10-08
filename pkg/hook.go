@@ -46,14 +46,27 @@ func validateDuplicate(address string) bool {
 	return isExisting
 }
 
+/*
+@docs https://dev-docs.dcentwallet.com/dynamic-link/eip-681-transaction-payment-request#eip681-dynamic-link-format
+*/
+func makeResourceEip681Compatible(address string) string {
+	// @dev ethereum mainnet, 0.001 ether
+	protocol := "ethereum"
+	chainId := 1
+	link := fmt.Sprintf("%s:%s@%d?value=1000000000000000", protocol, address, chainId)
+
+	return link
+}
+
 func GenerateQrCode(wallet string) string {
 	validateAddress(wallet)
 	isExisting := validateDuplicate(wallet)
+	link := makeResourceEip681Compatible(wallet)
 	filename := fmt.Sprintf("%s.png", wallet)
 
 	if !isExisting {
 		log.Println("GenerateQrCode: detecting new entry for qrcode, starting encoding...", filename)
-		png, err := qrcode.Encode(wallet, qrcode.Medium, 256)
+		png, err := qrcode.Encode(link, qrcode.Medium, 256)
 
 		if err != nil {
 			log.Fatalln(err.Error())
