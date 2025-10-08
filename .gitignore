@@ -35,10 +35,11 @@ bin
 # .idea/
 # .vscode/
 
-todo.md
 
 # sqlite db
 *.db
 docs/swagger.json
 docs/swagger.yaml
 _legacy
+TASK.md
+todo.md

@@ -40,3 +40,4 @@ _volume/_logs/*
 *.db
 *.sh
 *.md
+docs/*.png
