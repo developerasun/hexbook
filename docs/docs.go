@@ -25,36 +25,6 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/api/clicked": {
-            "get": {
-                "description": "testing htmx get method with swapping response html",
-                "tags": [
-                    "api"
-                ],
-                "summary": "testing htmx get method with swapping response html",
-                "responses": {}
-            }
-        },
-        "/api/fetch": {
-            "get": {
-                "description": "Fetch data from jsonplaceholder",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "api"
-                ],
-                "summary": "Fetch data from jsonplaceholder",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/internal_api.FetchDummyDataResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/api/health": {
             "get": {
                 "description": "Get server health status",
@@ -75,29 +45,41 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/ws": {
-            "get": {
-                "description": "upgrade header from http to ws",
+        "/api/qrcode": {
+            "post": {
+                "description": "request a corresponding qrcode for the submitted wallet",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "text/html"
+                ],
                 "tags": [
                     "api"
                 ],
-                "summary": "upgrade header from http to ws",
-                "responses": {}
+                "summary": "request a corresponding qrcode for the submitted wallet",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11",
+                        "description": "Wallet address",
+                        "name": "wallet",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         }
     },
     "definitions": {
-        "internal_api.FetchDummyDataResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                }
-            }
-        },
         "internal_api.HealthResponse": {
             "type": "object",
             "properties": {
@@ -115,8 +97,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "Hexbook API",
-	Description:      "Hexbook backend API documentation",
+	Title:            "hexbook API",
+	Description:      "hexbook backend API documentation",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

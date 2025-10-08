@@ -1,9 +1,7 @@
 package api
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 
@@ -25,55 +23,24 @@ func Health(ctx *gin.Context) {
 	})
 }
 
-// FetchDummyData godoc
-// @Summary Fetch data from jsonplaceholder
-// @Description Fetch data from jsonplaceholder
-// @Tags api
-// @Produce json
-// @Success 200 {object} FetchDummyDataResponse
-// @Router /api/fetch [get]
-func FetchDummyData(ctx *gin.Context) {
-	resp, gErr := http.Get("https://jsonplaceholder.typicode.com/todos/1")
-	if gErr != nil {
-		log.Fatalln(gErr.Error())
-	}
-	defer resp.Body.Close()
-
-	body, rErr := io.ReadAll(resp.Body)
-
-	if rErr != nil {
-		log.Fatalln(rErr.Error())
-	}
-
-	ctx.JSON(http.StatusOK, FetchDummyDataResponse{
-		Data: json.RawMessage(body),
-	})
-}
-
 // RenderMainPage godoc
 // @Summary show main page, returning html
 // @Description show main page, returning html
 // @Tags view
 // @Router / [get]
 func RenderMainPage(ctx *gin.Context) {
-	ctx.HTML(http.StatusOK, "index.html", gin.H{
-		"title": "Main Website",
-		"data": []struct {
-			Name string
-			Age  uint
-		}{
-			{Name: "jake", Age: 31},
-			{Name: "brian", Age: 22},
-			{Name: "smith", Age: 14},
-		},
-	})
+	ctx.HTML(http.StatusOK, "index.html", gin.H{})
 }
 
-// RenderClicked godoc
-// @Summary testing htmx get method with swapping response html
-// @Description testing htmx get method with swapping response html
+// RenderQrCode godoc
+// @Summary request a corresponding qrcode for the submitted wallet
+// @Description request a corresponding qrcode for the submitted wallet
 // @Tags api
-// @Router /api/qrcode [get]
+// @Accept application/x-www-form-urlencoded
+// @Produce html
+// @Param wallet formData string true "Wallet address" default(0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11)
+// @Success 200 {string} string <div><img src="image-path" alt="qrcode"/></div>
+// @Router /api/qrcode [post]
 func RenderQrCode(ctx *gin.Context) {
 	wallet := ctx.PostForm("wallet")
 

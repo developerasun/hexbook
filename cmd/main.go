@@ -60,7 +60,6 @@ func main() {
 
 	api := router.Group(constant.ROUTE_API)
 	api.GET("/health", apiController.Health)
-	api.GET("/fetch", apiController.FetchDummyData)
 	api.POST("/qrcode", apiController.RenderQrCode)
 
 	router.Run(":" + os.Getenv("PORT"))
