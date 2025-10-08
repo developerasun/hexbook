@@ -37,7 +37,7 @@ func validateDuplicate(address string) bool {
 	var isExisting bool = false
 
 	for _, v := range entries {
-		if v.Name() == address {
+		if v.Name() == address+".png" {
 			isExisting = true
 			break
 		}
