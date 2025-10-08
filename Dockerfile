@@ -13,8 +13,10 @@ RUN cd cmd && CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o ./server.run ./m
 # @dev multi-stage bulid for less image size
 FROM alpine:3.22 as runner
 WORKDIR /hexbook
-RUN mkdir -p cmd logs
+RUN mkdir -p cmd templates assets logs
 COPY --from=runtime /hexbook/cmd/server.run ./cmd
+COPY --from=runtime /hexbook/templates/ ./templates
+COPY --from=runtime /hexbook/assets/ ./assets
 EXPOSE 3010
 
 CMD ["./cmd/server.run"]
