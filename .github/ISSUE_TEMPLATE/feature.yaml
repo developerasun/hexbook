@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Fatcat Feature Requirement
+        Hexbook Feature Requirement
 
   - type: textarea
     id: what-happened

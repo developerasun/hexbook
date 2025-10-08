@@ -6,13 +6,13 @@ networks:
 
 services:
   backend:
-    image: fatcat-backend:latest
+    image: hexbook-backend:latest
     # open ports in overlay network to communicate each other
     ports:
       - "3010:3010"
     volumes:
       - ./.run.env:/.run.env
-      - ./_volume/_logs/fatcat_backend:/logs
+      - ./_volume/_logs/hexbook_backend:/logs
     networks:
       - webapp
       - common
@@ -37,7 +37,7 @@ services:
     command: tunnel --no-autoupdate run
     volumes:
       - ./.run.env/:/.run.env
-      # - ./_volume/_logs/fatcat_tunnel:/logs
+      # - ./_volume/_logs/hexbook_tunnel:/logs
     networks:
       - webapp
       - common

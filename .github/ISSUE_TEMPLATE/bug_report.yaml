@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Fatcat bug report
+        Hexbook bug report
   - type: textarea
     id: what-happened
     attributes:
