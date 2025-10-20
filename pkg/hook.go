@@ -12,63 +12,75 @@ import (
 )
 
 type QRCodeData struct {
-	Wallet    string // metamask & trust wallet only
+	AppType   string // metamask & trust wallet only
+	Wallet    string // 0x123...789
 	ChainId   uint
-	Amount    uint
+	Amount    string // 1e15, this is string since it's for uri
 	Decimal   uint
 	TokenType string
 }
 
-func buildBaseUrlByWallet(wallet string) string {
+type UriOption struct {
+	Prefix string
+}
+
+func BuildBaseUrlByWallet(wallet string) string {
 	var baseUrl string
 
 	switch wallet {
 	case "metamask":
 		baseUrl = "https://metamask.app.link/send"
-		// break
 
 	case "trust":
 		baseUrl = "ethereum:"
-		// break
 
 	default:
 		error := errors.New("buildBaseUrlByWallet.go: unsupported wallet type")
-		log.Fatalln(error.Error())
+		log.Panicln(error.Error())
 	}
 
 	return baseUrl
 }
 
-func buildMetamaskDeeplinkWithPrefix(qd QRCodeData) string {
-	baseUrl := buildBaseUrlByWallet(qd.Wallet)
-	prefix := "pay"
+/*
+@example1 eth
+https://metamask.app.link/send/pay-0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1?value=1e15
+
+@example2 erc20
+https://metamask.app.link/send/pay-0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1/transfer?address=0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11&uint256=1e6
+
+@example3
+https://metamask.app.link/send/0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1?value=1e15
+
+@example4
+https://metamask.app.link/send/0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1/transfer?address=0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11&uint256=1e6
+*/
+func BuildMetamaskDeeplink(qd QRCodeData, option *UriOption) string {
+	baseUrl := BuildBaseUrlByWallet(qd.AppType)
 	deeplink := ""
 
 	switch qd.TokenType {
 	case "eth":
-		deeplink = fmt.Sprintf("%s/%s-%s@%d?value=%d", baseUrl, prefix, qd.Wallet, qd.ChainId, qd.Amount)
-
+		if option != nil {
+			// @dev build eip681 uri with `pay` prefix
+			deeplink = fmt.Sprintf("%s/%s-%s@%d?value=%s", baseUrl, option.Prefix, qd.Wallet, qd.ChainId, qd.Amount)
+		} else {
+			deeplink = fmt.Sprintf("%s/%s@%d?value=%s", baseUrl, qd.Wallet, qd.ChainId, qd.Amount)
+		}
 	case "erc20":
+		if option != nil {
+			// @dev build eip681 uri with `pay` prefix
+			deeplink = fmt.Sprintf("%s/%s-%s@%d/transfer?address=%s&uint256=%s", baseUrl, option.Prefix, qd.Wallet, qd.ChainId, qd.Wallet, qd.Amount)
+		} else {
+			deeplink = fmt.Sprintf("%s/%s@%d/transfer?address=%s&uint256=%s", baseUrl, qd.Wallet, qd.ChainId, qd.Wallet, qd.Amount)
+		}
 
 	default:
-		error := errors.New("buildMetamaskDeeplinkWithPrefix.go: unsupported token type")
+		error := errors.New("buildMetamaskDeeplink.go: unsupported token type")
 		log.Fatalln(error.Error())
-
 	}
-	// eth-pay
-	// https://metamask.app.link/send/pay-0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1?value=1e15
-	// erc20 transfer-pay
-	// https://metamask.app.link/send/pay-0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1/transfer?address=0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11&uint256=1e6
+
 	return deeplink
-}
-
-func buildMetamaskDeeplink() string {
-	// eth-send
-	// https://metamask.app.link/send/0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1?value=1e15
-	// erc20 transfer-send(contract address@chainid)
-	// https://metamask.app.link/send/0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1/transfer?address=0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11&uint256=1e6
-
-	return ""
 }
 
 func validateAddress(address string) {
