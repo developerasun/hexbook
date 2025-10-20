@@ -11,6 +11,52 @@ import (
 	qrcode "github.com/skip2/go-qrcode"
 )
 
+type QRCodeData struct {
+	Wallet    string // metamask & trust wallet only
+	ChainId   uint
+	Amount    uint
+	Decimal   uint
+	TokenType string
+}
+
+func buildBaseUrlByWallet(wallet string) string {
+	var baseUrl string
+
+	switch wallet {
+	case "metamask":
+		baseUrl = "https://metamask.app.link/send"
+		// break
+
+	case "trust":
+		baseUrl = "ethereum:"
+		// break
+
+	default:
+		error := errors.New("buildBaseUrlByWallet.go: unsupported wallet type")
+		log.Fatalln(error.Error())
+	}
+
+	return baseUrl
+}
+
+func buildMetamaskDeeplinkWithPrefix() string {
+	// prefix := "pay-"
+	// eth-pay
+	// https://metamask.app.link/send/pay-0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1?value=1e15
+	// erc20 transfer-pay
+	// https://metamask.app.link/send/pay-0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1/transfer?address=0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11&uint256=1e6
+	return ""
+}
+
+func buildMetamaskDeeplink() string {
+	// eth-send
+	// https://metamask.app.link/send/0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1?value=1e15
+	// erc20 transfer-send(contract address@chainid)
+	// https://metamask.app.link/send/0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1/transfer?address=0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11&uint256=1e6
+
+	return ""
+}
+
 func validateAddress(address string) {
 	_, found := strings.CutPrefix(address, "0x")
 
