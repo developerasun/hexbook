@@ -39,13 +39,27 @@ func buildBaseUrlByWallet(wallet string) string {
 	return baseUrl
 }
 
-func buildMetamaskDeeplinkWithPrefix() string {
-	// prefix := "pay-"
+func buildMetamaskDeeplinkWithPrefix(qd QRCodeData) string {
+	baseUrl := buildBaseUrlByWallet(qd.Wallet)
+	prefix := "pay"
+	deeplink := ""
+
+	switch qd.TokenType {
+	case "eth":
+		deeplink = fmt.Sprintf("%s/%s-%s@%d?value=%d", baseUrl, prefix, qd.Wallet, qd.ChainId, qd.Amount)
+
+	case "erc20":
+
+	default:
+		error := errors.New("buildMetamaskDeeplinkWithPrefix.go: unsupported token type")
+		log.Fatalln(error.Error())
+
+	}
 	// eth-pay
 	// https://metamask.app.link/send/pay-0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1?value=1e15
 	// erc20 transfer-pay
 	// https://metamask.app.link/send/pay-0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1/transfer?address=0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11&uint256=1e6
-	return ""
+	return deeplink
 }
 
 func buildMetamaskDeeplink() string {
