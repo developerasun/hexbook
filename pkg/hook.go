@@ -43,6 +43,8 @@ func BuildBaseUrlByWallet(wallet string) string {
 }
 
 /*
+@docs https://dev-docs.dcentwallet.com/dynamic-link/eip-681-transaction-payment-request#eip681-dynamic-link-format
+
 @example1 eth
 https://metamask.app.link/send/pay-0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1?value=1e15
 
@@ -55,7 +57,7 @@ https://metamask.app.link/send/0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1?valu
 @example4
 https://metamask.app.link/send/0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1/transfer?address=0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11&uint256=1e6
 */
-func BuildMetamaskDeeplink(qd QRCodeData, option *UriOption) string {
+func BuildQRCodeDeeplink(qd QRCodeData, option *UriOption) string {
 	baseUrl := BuildBaseUrlByWallet(qd.AppType)
 	deeplink := ""
 
@@ -118,10 +120,6 @@ func validateDuplicate(address string) bool {
 	return isExisting
 }
 
-/*
-@docs https://dev-docs.dcentwallet.com/dynamic-link/eip-681-transaction-payment-request#eip681-dynamic-link-format
-TODO check metamask qrcode not working
-*/
 func makeResourceEip681Compatible(address string) string {
 	// @dev ethereum mainnet, 0.001 ether
 	protocol := "ethereum"

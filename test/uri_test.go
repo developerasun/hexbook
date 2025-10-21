@@ -38,7 +38,7 @@ func TestMetamaskDeeplink(t *testing.T) {
 	}
 	// eip681 scheme
 	options := hook.UriOption{Prefix: "pay"}
-	deeplink := hook.BuildMetamaskDeeplink(qd, &options)
+	deeplink := hook.BuildQRCodeDeeplink(qd, &options)
 
 	assert.Equal(generated, deeplink)
 	t.Log(deeplink)
