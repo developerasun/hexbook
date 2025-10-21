@@ -47,9 +47,30 @@
         <ul class="menu menu-horizontal px-1">
           <li>
             <details>
-              <summary>Network</summary>
-              <ul class="bg-base-100 rounded-t-none p-2">
-                <li><a>🚧 WIP</a></li>
+              <summary>Supported Wallets</summary>
+              <ul class="bg-base-200 rounded-t-none p-2">
+                <li>
+                  <a>
+                    <img
+                      src="../assets/metamask.svg"
+                      width="25"
+                      height="25"
+                      alt="github"
+                    />
+                    Metamask
+                  </a>
+                </li>
+                <li>
+                  <a>
+                    <img
+                      src="../assets/trust.svg"
+                      width="25"
+                      height="25"
+                      alt="github"
+                    />
+                    Trust Wallet
+                  </a>
+                </li>
               </ul>
             </details>
           </li>
@@ -58,7 +79,7 @@
     </div>
 
     <!-- MAIN -->
-    <main class="h-[78vh] border-1">
+    <main class="h-[78vh] border-1 rounded-md">
       <form
         class="flex flex-col flex-nowrap justify-center items-center h-[100%] gap-6"
         hx-post="/api/qrcode"
@@ -73,7 +94,7 @@
             id="wallet"
             name="wallet"
             type="text"
-            class="input-lg"
+            class="input-lg p-1 rounded-md"
             placeholder="0xD2e203cd5df6756EeE316493F702249423adCae7"
             required
           />
@@ -92,7 +113,7 @@
 
     <!-- FOOTER -->
     <footer
-      class="h-fit border-1 footer sm:footer-horizontal bg-neutral text-neutral-content items-center p-4"
+      class="h-fit border-1 rounded-md footer sm:footer-horizontal bg-neutral text-neutral-content items-center p-4"
     >
       <aside class="grid-flow-col items-center justify-self-center">
         <a href="https://github.com/developerasun/hexbook" target="_blank">
