@@ -47,9 +47,19 @@
         <ul class="menu menu-horizontal px-1">
           <li>
             <details>
-              <summary>Network</summary>
-              <ul class="bg-base-100 rounded-t-none p-2">
-                <li><a>🚧 WIP</a></li>
+              <summary>Supported Network</summary>
+              <ul class="bg-base-200 rounded-t-none p-2">
+                <li>
+                  <a>
+                    <img
+                      src="../assets/ethereum.svg"
+                      width="15"
+                      height="20"
+                      alt="ethereum"
+                    />
+                    Mainnet
+                  </a>
+                </li>
               </ul>
             </details>
           </li>
@@ -58,26 +68,56 @@
     </div>
 
     <!-- MAIN -->
-    <main class="h-[78vh] border-1">
+    <main class="h-[78vh] border-1 rounded-md">
       <form
         class="flex flex-col flex-nowrap justify-center items-center h-[100%] gap-6"
         hx-post="/api/qrcode"
-        hx-include="#wallet"
+        hx-include="#wallet,#amount,#apptype"
         hx-target="#qrcode"
       >
         <fieldset class="fieldset px-6">
-          <legend class="fieldset-legend text-center text-2xl">
-            Enter your wallet address
-          </legend>
+          <legend class="fieldset-legend">App Type</legend>
+          <select id="apptype" name="apptype" class="select">
+            <option disabled selected>Pick a wallet</option>
+            <option value="metamask">
+              <img
+                src="../assets/metamask.svg"
+                width="25"
+                height="25"
+                alt="metamask"
+              />
+              Metamask
+            </option>
+            <option value="trust">
+              <img
+                src="../assets/trust.svg"
+                width="25"
+                height="25"
+                alt="trust"
+              />
+              Trust Wallet
+            </option>
+          </select>
+
+          <p class="label">Send this much</p>
+          <input
+            id="amount"
+            name="amount"
+            type="number"
+            step="0.001"
+            class="input-lg p-1 rounded-md placeholder-gray-500 placeholder-opacity-70"
+            placeholder="0.001 (ETH)"
+            required
+          />
+          <p class="label">to this address</p>
           <input
             id="wallet"
             name="wallet"
             type="text"
-            class="input-lg"
-            placeholder="0xD2e203cd5df6756EeE316493F702249423adCae7"
+            class="input-lg p-1 rounded-md placeholder-gray-500 placeholder-opacity-70"
+            placeholder="0x123...789"
             required
           />
-          <p class="label">evm only for now</p>
           <div class="my-2 mx-auto text-center">
             Your QR code shows up below
             <div
@@ -92,7 +132,7 @@
 
     <!-- FOOTER -->
     <footer
-      class="h-fit border-1 footer sm:footer-horizontal bg-neutral text-neutral-content items-center p-4"
+      class="h-fit border-1 rounded-md footer sm:footer-horizontal bg-neutral text-neutral-content items-center p-4"
     >
       <aside class="grid-flow-col items-center justify-self-center">
         <a href="https://github.com/developerasun/hexbook" target="_blank">
