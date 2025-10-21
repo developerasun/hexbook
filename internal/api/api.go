@@ -44,12 +44,15 @@ func RenderMainPage(ctx *gin.Context) {
 func RenderQrCode(ctx *gin.Context) {
 	wallet := ctx.PostForm("wallet")
 	amount := ctx.PostForm("amount")
+	appType := ctx.PostForm("apptype")
+
+	log.Println("app type: ", appType)
 
 	if len(wallet) == 0 {
 		log.Fatalln("RenderQrCode:len(wallet): empty wallet from client")
 	}
 
-	filename := pkg.GenerateQrCode(wallet, amount)
+	filename := pkg.GenerateQrCode(appType, wallet, amount)
 
 	_html := fmt.Sprintf(`<div><img src="%s" alt="qrcode"/></div>`, "/assets/qrcode/"+filename)
 	ctx.Writer.WriteHeader(http.StatusOK)
