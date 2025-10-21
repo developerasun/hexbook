@@ -83,13 +83,24 @@
       <form
         class="flex flex-col flex-nowrap justify-center items-center h-[100%] gap-6"
         hx-post="/api/qrcode"
-        hx-include="#wallet"
+        hx-include="#wallet,#amount"
         hx-target="#qrcode"
       >
         <fieldset class="fieldset px-6">
           <legend class="fieldset-legend text-center text-2xl">
-            Enter your wallet address
+            QR Invoice Generator
           </legend>
+          <p class="label">Send this much</p>
+          <input
+            id="amount"
+            name="amount"
+            type="number"
+            step="0.001"
+            class="input-lg p-1 rounded-md"
+            placeholder="0.001 (ETH)"
+            required
+          />
+          <p class="label">to this wallet</p>
           <input
             id="wallet"
             name="wallet"
@@ -98,7 +109,6 @@
             placeholder="0xD2e203cd5df6756EeE316493F702249423adCae7"
             required
           />
-          <p class="label">evm only for now</p>
           <div class="my-2 mx-auto text-center">
             Your QR code shows up below
             <div
