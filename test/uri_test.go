@@ -14,12 +14,12 @@ func TestQRCodeURI(t *testing.T) {
 	unsupported := "binance"
 
 	assert.Panics(func() {
-		hook.BuildBaseUrlByWallet(unsupported)
+		hook.BuildBaseUrlByAppType(unsupported)
 	})
 
 	var baseUrl string
 	assert.NotPanics(func() {
-		baseUrl = hook.BuildBaseUrlByWallet(supported)
+		baseUrl = hook.BuildBaseUrlByAppType(supported)
 	})
 
 	t.Log("baseUrl: ", baseUrl)
