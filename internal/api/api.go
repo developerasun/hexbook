@@ -43,12 +43,13 @@ func RenderMainPage(ctx *gin.Context) {
 // @Router /api/qrcode [post]
 func RenderQrCode(ctx *gin.Context) {
 	wallet := ctx.PostForm("wallet")
+	amount := ctx.PostForm("amount")
 
 	if len(wallet) == 0 {
 		log.Fatalln("RenderQrCode:len(wallet): empty wallet from client")
 	}
 
-	filename := pkg.GenerateQrCode(wallet)
+	filename := pkg.GenerateQrCode(wallet, amount)
 
 	_html := fmt.Sprintf(`<div><img src="%s" alt="qrcode"/></div>`, "/assets/qrcode/"+filename)
 	ctx.Writer.WriteHeader(http.StatusOK)

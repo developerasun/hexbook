@@ -120,24 +120,26 @@ func validateDuplicate(address string) bool {
 	return isExisting
 }
 
-func makeResourceEip681Compatible(address string) string {
-	// @dev ethereum mainnet, 0.001 ether
-	protocol := "ethereum"
-	chainId := 1
-	link := fmt.Sprintf("%s:%s@%d?value=1000000000000000", protocol, address, chainId)
-
-	return link
-}
-
-func GenerateQrCode(wallet string) string {
+func GenerateQrCode(wallet string, amount string) string {
 	validateAddress(wallet)
 	isExisting := validateDuplicate(wallet)
-	link := makeResourceEip681Compatible(wallet)
+
+	// @dev test working metamask data first
+	qd := QRCodeData{
+		AppType:   "metamask",
+		Wallet:    wallet,
+		ChainId:   1,
+		Amount:    "2e15", // hardcoded
+		Decimal:   1e18,
+		TokenType: "eth",
+	}
+
+	deeplink := BuildQRCodeDeeplink(qd, nil)
 	filename := fmt.Sprintf("%s.png", wallet)
 
 	if !isExisting {
 		log.Println("GenerateQrCode: detecting new entry for qrcode, starting encoding...", filename)
-		png, err := qrcode.Encode(link, qrcode.Medium, 256)
+		png, err := qrcode.Encode(deeplink, qrcode.Medium, 256)
 
 		if err != nil {
 			log.Fatalln(err.Error())
