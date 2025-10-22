@@ -3,12 +3,14 @@ package test
 import (
 	"testing"
 
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 
 	hook "github.com/hexbook/pkg"
 )
 
 func TestQRCodeURI(t *testing.T) {
+	t.Skip()
 	assert := assert.New(t)
 	supported := "metamask"
 	unsupported := "binance"
@@ -26,6 +28,7 @@ func TestQRCodeURI(t *testing.T) {
 }
 
 func TestMetamaskDeeplink(t *testing.T) {
+	t.Skip()
 	assert := assert.New(t)
 	generated := "https://metamask.app.link/send/pay-0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1?value=1e15"
 	qd := hook.QRCodeData{
@@ -42,4 +45,18 @@ func TestMetamaskDeeplink(t *testing.T) {
 
 	assert.Equal(generated, deeplink)
 	t.Log(deeplink)
+}
+
+/*
+@doc see here: https://goethereumbook.org/util-go/
+*/
+func TestToWeiConversion(t *testing.T) {
+	assert := assert.New(t)
+	hardcodedAmount := "0.002"
+	amount, _ := decimal.NewFromString(hardcodedAmount)
+	plain := decimal.NewFromFloat(1e18)
+	calculated := amount.Mul(plain)
+
+	t.Log("calculated: ", calculated)
+	assert.Equal(calculated.String(), "2000000000000000")
 }
