@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	constant "github.com/hexbook/internal/constant"
+	"github.com/shopspring/decimal"
 	qrcode "github.com/skip2/go-qrcode"
 )
 
@@ -86,9 +87,8 @@ func BuildQRCodeDeeplink(qd QRCodeData, option *UriOption) string {
 		}
 	}
 
-	// TODO replace hardcoded decimals
 	if qd.AppType == "trust" {
-		deeplink = fmt.Sprintf("%s:%s@%d?value=1000000000000000", baseUrl, qd.Wallet, qd.ChainId)
+		deeplink = fmt.Sprintf("%s:%s@%d?value=%s", baseUrl, qd.Wallet, qd.ChainId, qd.Amount)
 	}
 
 	log.Println("apptype: ", qd.AppType, " deeplink: ", deeplink)
@@ -138,6 +138,18 @@ func validateDuplicate(address string, appType string) bool {
 	return isExisting
 }
 
+func toWei(_amount string) string {
+	amount, err := decimal.NewFromString(_amount)
+
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+	plain := decimal.NewFromFloat(1e18)
+	calculated := amount.Mul(plain)
+
+	return calculated.String()
+}
+
 func GenerateQrCode(appType string, wallet string, amount string) string {
 	validateAppType(appType)
 	validateAddress(wallet)
@@ -146,9 +158,10 @@ func GenerateQrCode(appType string, wallet string, amount string) string {
 	var deeplink string
 	if appType == "metamask" {
 		deeplink = BuildQRCodeDeeplink(QRCodeData{
-			AppType:   "metamask",
-			Wallet:    wallet,
-			ChainId:   1,
+			AppType: "metamask",
+			Wallet:  wallet,
+			ChainId: 1,
+			// TODO replace hardcoded decimals
 			Amount:    "2e15", // hardcoded
 			Decimal:   1e18,
 			TokenType: "eth",
@@ -158,7 +171,7 @@ func GenerateQrCode(appType string, wallet string, amount string) string {
 			AppType:   "trust",
 			Wallet:    wallet,
 			ChainId:   1,
-			Amount:    "2e15", // hardcoded
+			Amount:    toWei(amount), // hardcoded
 			Decimal:   1e18,
 			TokenType: "eth",
 		}, nil)
