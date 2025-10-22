@@ -32,6 +32,12 @@ func RenderMainPage(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "index.html", gin.H{})
 }
 
+type QRCodeDataDto struct {
+	Wallet  string `form:"wallet" binding:"required"`
+	Amount  string `form:"amount" binding:"required"`
+	AppType string `form:"apptype" binding:"required"`
+}
+
 // RenderQrCode godoc
 // @Summary request a corresponding qrcode for the submitted wallet
 // @Description request a corresponding qrcode for the submitted wallet
@@ -42,6 +48,14 @@ func RenderMainPage(ctx *gin.Context) {
 // @Success 200 {string} string <div><img src="image-path" alt="qrcode"/></div>
 // @Router /api/qrcode [post]
 func RenderQrCode(ctx *gin.Context) {
+
+	var qrcodeData QRCodeDataDto
+
+	if err := ctx.ShouldBind(&qrcodeData); err != nil {
+		log.Fatalln("RenderQrCode: ", err.Error())
+	}
+	log.Println("qrcodeData: ", qrcodeData)
+
 	wallet := ctx.PostForm("wallet")
 	amount := ctx.PostForm("amount")
 	appType := ctx.PostForm("apptype")
