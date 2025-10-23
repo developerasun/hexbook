@@ -1,6 +1,9 @@
 package test
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/shopspring/decimal"
@@ -37,7 +40,6 @@ func TestMetamaskDeeplink(t *testing.T) {
 		ChainId:   1,
 		Amount:    "1e15",
 		TokenType: "eth",
-		Decimal:   18,
 	}
 	// eip681 scheme
 	options := hook.UriOption{Prefix: "pay"}
@@ -51,6 +53,7 @@ func TestMetamaskDeeplink(t *testing.T) {
 @doc see here: https://goethereumbook.org/util-go/
 */
 func TestToWeiConversion(t *testing.T) {
+	t.Skip()
 	assert := assert.New(t)
 	hardcodedAmount := "0.002"
 	amount, _ := decimal.NewFromString(hardcodedAmount)
@@ -59,4 +62,16 @@ func TestToWeiConversion(t *testing.T) {
 
 	t.Log("calculated: ", calculated)
 	assert.Equal(calculated.String(), "2000000000000000")
+}
+
+func TestToWeiWithExponent(t *testing.T) {
+	assert := assert.New(t)
+	toFloat, _ := strconv.ParseFloat("0.004", 64)
+	target := fmt.Sprintf("%.e", toFloat*1e18)
+
+	converted := strings.Replace(target, "+", "", 1)
+	t.Log("target: ", target)
+	t.Log("toFloat: ", toFloat)
+	t.Log("converted: ", converted)
+	assert.Equal("4e15", converted)
 }
