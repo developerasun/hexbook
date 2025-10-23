@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	constant "github.com/hexbook/internal/constant"
@@ -17,7 +18,6 @@ type QRCodeData struct {
 	Wallet    string // 0x123...789
 	ChainId   uint
 	Amount    string // 1e15, this is string since it's for uri
-	Decimal   uint
 	TokenType string
 }
 
@@ -82,7 +82,7 @@ func BuildQRCodeDeeplink(qd QRCodeData, option *UriOption) string {
 			}
 
 		default:
-			error := errors.New("buildMetamaskDeeplink.go: unsupported token type")
+			error := errors.New("BuildQRCodeDeeplink.go: unsupported token type")
 			log.Fatalln(error.Error())
 		}
 	}
@@ -138,16 +138,30 @@ func validateDuplicate(address string, appType string) bool {
 	return isExisting
 }
 
+/*
+@return e.g `1000000000000000000`
+*/
 func toWei(_amount string) string {
 	amount, err := decimal.NewFromString(_amount)
 
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	plain := decimal.NewFromFloat(1e18)
+	plain := decimal.NewFromFloat(constant.ETH_DECIMAL)
 	calculated := amount.Mul(plain)
 
 	return calculated.String()
+}
+
+/*
+@return e.g `N*1e18`
+*/
+func toWeiAsExponent(_amount string) string {
+	toFloat, _ := strconv.ParseFloat(_amount, 64)
+	target := fmt.Sprintf("%.e", toFloat*constant.ETH_DECIMAL)
+
+	converted := strings.Replace(target, "+", "", 1)
+	return converted
 }
 
 func GenerateQrCode(appType string, wallet string, amount string) string {
@@ -162,8 +176,7 @@ func GenerateQrCode(appType string, wallet string, amount string) string {
 			Wallet:  wallet,
 			ChainId: 1,
 			// TODO replace hardcoded decimals
-			Amount:    "2e15", // hardcoded
-			Decimal:   1e18,
+			Amount:    toWeiAsExponent(amount), // hardcoded
 			TokenType: "eth",
 		}, nil)
 	} else {
@@ -172,7 +185,6 @@ func GenerateQrCode(appType string, wallet string, amount string) string {
 			Wallet:    wallet,
 			ChainId:   1,
 			Amount:    toWei(amount), // hardcoded
-			Decimal:   1e18,
 			TokenType: "eth",
 		}, nil)
 	}
