@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	constant "github.com/hexbook/internal/constant"
+	"github.com/shopspring/decimal"
 	qrcode "github.com/skip2/go-qrcode"
 )
 
@@ -16,7 +18,6 @@ type QRCodeData struct {
 	Wallet    string // 0x123...789
 	ChainId   uint
 	Amount    string // 1e15, this is string since it's for uri
-	Decimal   uint
 	TokenType string
 }
 
@@ -81,14 +82,13 @@ func BuildQRCodeDeeplink(qd QRCodeData, option *UriOption) string {
 			}
 
 		default:
-			error := errors.New("buildMetamaskDeeplink.go: unsupported token type")
+			error := errors.New("BuildQRCodeDeeplink.go: unsupported token type")
 			log.Fatalln(error.Error())
 		}
 	}
 
-	// TODO replace hardcoded decimals
 	if qd.AppType == "trust" {
-		deeplink = fmt.Sprintf("%s:%s@%d?value=1000000000000000", baseUrl, qd.Wallet, qd.ChainId)
+		deeplink = fmt.Sprintf("%s:%s@%d?value=%s", baseUrl, qd.Wallet, qd.ChainId, qd.Amount)
 	}
 
 	log.Println("apptype: ", qd.AppType, " deeplink: ", deeplink)
@@ -138,6 +138,32 @@ func validateDuplicate(address string, appType string) bool {
 	return isExisting
 }
 
+/*
+@return e.g `1000000000000000000`
+*/
+func toWei(_amount string) string {
+	amount, err := decimal.NewFromString(_amount)
+
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+	plain := decimal.NewFromFloat(constant.ETH_DECIMAL)
+	calculated := amount.Mul(plain)
+
+	return calculated.String()
+}
+
+/*
+@return e.g `N*1e18`
+*/
+func toWeiAsExponent(_amount string) string {
+	toFloat, _ := strconv.ParseFloat(_amount, 64)
+	target := fmt.Sprintf("%.e", toFloat*constant.ETH_DECIMAL)
+
+	converted := strings.Replace(target, "+", "", 1)
+	return converted
+}
+
 func GenerateQrCode(appType string, wallet string, amount string) string {
 	validateAppType(appType)
 	validateAddress(wallet)
@@ -146,11 +172,11 @@ func GenerateQrCode(appType string, wallet string, amount string) string {
 	var deeplink string
 	if appType == "metamask" {
 		deeplink = BuildQRCodeDeeplink(QRCodeData{
-			AppType:   "metamask",
-			Wallet:    wallet,
-			ChainId:   1,
-			Amount:    "2e15", // hardcoded
-			Decimal:   1e18,
+			AppType: "metamask",
+			Wallet:  wallet,
+			ChainId: 1,
+			// TODO replace hardcoded decimals
+			Amount:    toWeiAsExponent(amount), // hardcoded
 			TokenType: "eth",
 		}, nil)
 	} else {
@@ -158,8 +184,7 @@ func GenerateQrCode(appType string, wallet string, amount string) string {
 			AppType:   "trust",
 			Wallet:    wallet,
 			ChainId:   1,
-			Amount:    "2e15", // hardcoded
-			Decimal:   1e18,
+			Amount:    toWei(amount), // hardcoded
 			TokenType: "eth",
 		}, nil)
 	}

@@ -42,11 +42,20 @@ func RenderMainPage(ctx *gin.Context) {
 // @Success 200 {string} string <div><img src="image-path" alt="qrcode"/></div>
 // @Router /api/qrcode [post]
 func RenderQrCode(ctx *gin.Context) {
+
+	var qrcodeData QRCodeDataDto
+
+	if err := ctx.ShouldBind(&qrcodeData); err != nil {
+		log.Fatalln("RenderQrCode: ", err.Error())
+	}
+	log.Println("qrcodeData: ", qrcodeData)
+
 	wallet := ctx.PostForm("wallet")
 	amount := ctx.PostForm("amount")
 	appType := ctx.PostForm("apptype")
 
 	log.Println("app type: ", appType)
+	log.Println("amount: ", amount)
 
 	if len(wallet) == 0 {
 		log.Fatalln("RenderQrCode:len(wallet): empty wallet from client")
