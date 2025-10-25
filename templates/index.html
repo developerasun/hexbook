@@ -69,65 +69,140 @@
 
     <!-- MAIN -->
     <main class="h-[78vh] border-1 rounded-md">
-      <form
-        class="flex flex-col flex-nowrap justify-center items-center h-[100%] gap-6"
-        hx-post="/api/qrcode"
-        hx-include="#wallet,#amount,#apptype"
-        hx-target="#qrcode"
-      >
-        <fieldset class="fieldset px-6">
-          <legend class="fieldset-legend">App Type</legend>
-          <select id="apptype" name="apptype" class="select">
-            <option disabled selected>Pick a wallet</option>
-            <option value="metamask">
-              <img
-                src="../assets/metamask.svg"
-                width="25"
-                height="25"
-                alt="metamask"
-              />
-              Metamask
-            </option>
-            <option value="trust">
-              <img
-                src="../assets/trust.svg"
-                width="25"
-                height="25"
-                alt="trust"
-              />
-              Trust Wallet
-            </option>
-          </select>
+      <!-- name of each tab group should be unique -->
+      <div class="tabs tabs-lift">
+        <input
+          type="radio"
+          name="my_tabs_3"
+          class="tab"
+          aria-label="Ether"
+          checked="checked"
+        />
+        <div class="tab-content bg-base-100 border-base-300">
+          <form
+            class="flex flex-col flex-nowrap justify-center items-center h-[100%] gap-6"
+            hx-post="/api/qrcode"
+            hx-include="#wallet,#amount,#apptype"
+            hx-target="#qrcode"
+          >
+            <fieldset class="fieldset px-6">
+              <legend class="fieldset-legend">App Type</legend>
+              <select id="apptype" name="apptype" class="select">
+                <option disabled selected>Pick a wallet</option>
+                <option value="metamask">
+                  <img
+                    src="../assets/metamask.svg"
+                    width="25"
+                    height="25"
+                    alt="metamask"
+                  />
+                  Metamask
+                </option>
+                <option value="trust">
+                  <img
+                    src="../assets/trust.svg"
+                    width="25"
+                    height="25"
+                    alt="trust"
+                  />
+                  Trust Wallet
+                </option>
+              </select>
 
-          <p class="label">Send this much</p>
-          <input
-            id="amount"
-            name="amount"
-            type="number"
-            step="0.001"
-            class="input-lg p-1 rounded-md placeholder-gray-500 placeholder-opacity-70"
-            placeholder="0.001 (ETH)"
-            required
-          />
-          <p class="label">to this address</p>
-          <input
-            id="wallet"
-            name="wallet"
-            type="text"
-            class="input-lg p-1 rounded-md placeholder-gray-500 placeholder-opacity-70"
-            placeholder="0x123...789"
-            required
-          />
-          <div class="my-2 mx-auto text-center">
-            Your QR code shows up below
-            <div
-              id="qrcode"
-              class="h-[256px] w-[256px] border-1 rounded-md"
-            ></div>
-          </div>
-          <button class="btn btn-primary" type="submit">Convert</button>
-        </fieldset>
-      </form>
+              <p class="label">Send this much</p>
+              <input
+                id="amount"
+                name="amount"
+                type="number"
+                step="0.001"
+                class="input-lg p-1 rounded-md placeholder-gray-500 placeholder-opacity-70"
+                placeholder="0.001 (ETH)"
+                required
+              />
+              <p class="label">to this address</p>
+              <input
+                id="wallet"
+                name="wallet"
+                type="text"
+                class="input-lg p-1 rounded-md placeholder-gray-500 placeholder-opacity-70"
+                placeholder="0x123...789"
+                required
+              />
+              <div class="my-2 mx-auto text-center">
+                Your QR code shows up below
+                <div
+                  id="qrcode"
+                  class="h-[256px] w-[256px] border-1 rounded-md"
+                ></div>
+              </div>
+              <button class="btn btn-primary" type="submit">QRCODE</button>
+            </fieldset>
+          </form>
+        </div>
+
+        <input type="radio" name="my_tabs_3" class="tab" aria-label="USDT" />
+        <div class="tab-content bg-base-100 border-base-300">
+          <form
+            class="flex flex-col flex-nowrap justify-center items-center h-[100%] gap-6"
+            hx-post="/api/qrcode2"
+            hx-include="#wallet2,#amount2,#apptype2"
+            hx-target="#qrcode2"
+          >
+            <fieldset class="fieldset px-6">
+              <legend class="fieldset-legend">App Type</legend>
+              <select id="apptype2" name="apptype2" class="select">
+                <option disabled selected>Pick a wallet</option>
+                <option value="metamask">
+                  <img
+                    src="../assets/metamask.svg"
+                    width="25"
+                    height="25"
+                    alt="metamask"
+                  />
+                  Metamask
+                </option>
+                <option value="trust">
+                  <img
+                    src="../assets/trust.svg"
+                    width="25"
+                    height="25"
+                    alt="trust"
+                  />
+                  Trust Wallet
+                </option>
+              </select>
+
+              <p class="label">Send this much</p>
+              <input
+                id="amount2"
+                name="amount2"
+                type="number"
+                step="1"
+                class="input-lg p-1 rounded-md placeholder-gray-500 placeholder-opacity-70"
+                placeholder="1 (USDT)"
+                required
+              />
+              <p class="label">to this address</p>
+              <input
+                id="wallet2"
+                name="wallet2"
+                type="text"
+                class="input-lg p-1 rounded-md placeholder-gray-500 placeholder-opacity-70"
+                placeholder="0x123...789"
+                required
+              />
+              <div class="my-2 mx-auto text-center">
+                Your QR code shows up below
+                <div
+                  id="qrcode2"
+                  class="h-[256px] w-[256px] border-1 rounded-md"
+                ></div>
+              </div>
+              <button class="btn btn-secondary" type="submit">QRCODE</button>
+            </fieldset>
+          </form>
+        </div>
+      </div>
     </main>
 
     <!-- FOOTER -->

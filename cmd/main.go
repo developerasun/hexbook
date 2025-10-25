@@ -54,6 +54,7 @@ func main() {
 
 	router.Static("/assets", staticPath)
 	router.LoadHTMLGlob("templates/*")
+	router.Use(gin.Recovery())
 
 	root := router.Group(constant.ROUTE_ROOT)
 	root.GET("/", apiController.RenderMainPage)
@@ -61,6 +62,7 @@ func main() {
 	api := router.Group(constant.ROUTE_API)
 	api.GET("/health", apiController.Health)
 	api.POST("/qrcode", apiController.RenderQrCode)
+	api.POST("/qrcode2", apiController.RenderQrCode2)
 
 	router.Run(":" + os.Getenv("PORT"))
 	log.Println("main.go: router started")

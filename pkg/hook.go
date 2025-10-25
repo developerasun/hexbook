@@ -172,10 +172,9 @@ func GenerateQrCode(appType string, wallet string, amount string) string {
 	var deeplink string
 	if appType == "metamask" {
 		deeplink = BuildQRCodeDeeplink(QRCodeData{
-			AppType: "metamask",
-			Wallet:  wallet,
-			ChainId: 1,
-			// TODO replace hardcoded decimals
+			AppType:   "metamask",
+			Wallet:    wallet,
+			ChainId:   1,
 			Amount:    toWeiAsExponent(amount), // hardcoded
 			TokenType: "eth",
 		}, nil)
