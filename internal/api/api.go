@@ -53,15 +53,55 @@ func RenderQrCode(ctx *gin.Context) {
 	wallet := ctx.PostForm("wallet")
 	amount := ctx.PostForm("amount")
 	appType := ctx.PostForm("apptype")
+	tokenType := ctx.PostForm("tokentype")
 
 	log.Println("app type: ", appType)
 	log.Println("amount: ", amount)
+	log.Println("tokentype: ", tokenType)
 
 	if len(wallet) == 0 {
 		log.Fatalln("RenderQrCode:len(wallet): empty wallet from client")
 	}
 
-	filename := pkg.GenerateQrCode(appType, wallet, amount)
+	filename := pkg.GenerateQrCode(appType, wallet, amount, tokenType)
+
+	_html := fmt.Sprintf(`<div><img src="%s" alt="qrcode"/></div>`, "/assets/qrcode/"+filename)
+	ctx.Writer.WriteHeader(http.StatusOK)
+	ctx.Writer.Write([]byte(_html))
+}
+
+// RenderQrCode godoc
+// @Summary request a corresponding qrcode for the submitted wallet
+// @Description request a corresponding qrcode for the submitted wallet
+// @Tags api
+// @Accept application/x-www-form-urlencoded
+// @Produce html
+// @Param wallet formData string true "Wallet address" default(0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11)
+// @Success 200 {string} string <div><img src="image-path" alt="qrcode"/></div>
+// @Router /api/qrcode [post]
+func RenderQrCode2(ctx *gin.Context) {
+
+	var qrcodeData QRCodeDataDto2
+
+	if err := ctx.ShouldBind(&qrcodeData); err != nil {
+		log.Fatalln("RenderQrCode2: ", err.Error())
+	}
+	log.Println("qrcodeData2: ", qrcodeData)
+
+	wallet := ctx.PostForm("wallet2")
+	amount := ctx.PostForm("amount2")
+	appType := ctx.PostForm("apptype2")
+	tokenType := ctx.PostForm("tokentype2")
+
+	log.Println("apptype2: ", appType)
+	log.Println("amount2: ", amount)
+	log.Println("tokentype2: ", tokenType)
+
+	if len(wallet) == 0 {
+		log.Fatalln("RenderQrCode2:len(wallet): empty wallet from client")
+	}
+
+	filename := pkg.GenerateQrCode(appType, wallet, amount, tokenType)
 
 	_html := fmt.Sprintf(`<div><img src="%s" alt="qrcode"/></div>`, "/assets/qrcode/"+filename)
 	ctx.Writer.WriteHeader(http.StatusOK)
