@@ -74,7 +74,7 @@
         <input
           type="radio"
           name="my_tabs_3"
-          class="tab"
+          class="tab text-primary"
           aria-label="Ether"
           checked="checked"
         />
@@ -82,7 +82,7 @@
           <form
             class="flex flex-col flex-nowrap justify-center items-center h-[100%] gap-6"
             hx-post="/api/qrcode"
-            hx-include="#wallet,#amount,#apptype"
+            hx-include="#wallet,#amount,#apptype,#tokentype"
             hx-target="#qrcode"
           >
             <fieldset class="fieldset px-6">
@@ -128,6 +128,14 @@
                 placeholder="0x123...789"
                 required
               />
+              <input
+                id="tokentype"
+                name="tokentype"
+                type="text"
+                hidden
+                class="opacity-0"
+                value="ether"
+              />
               <div class="my-2 mx-auto text-center">
                 Your QR code shows up below
                 <div
@@ -140,12 +148,17 @@
           </form>
         </div>
 
-        <input type="radio" name="my_tabs_3" class="tab" aria-label="USDT" />
+        <input
+          type="radio"
+          name="my_tabs_3"
+          class="tab text-accent"
+          aria-label="USDT"
+        />
         <div class="tab-content bg-base-100 border-base-300">
           <form
             class="flex flex-col flex-nowrap justify-center items-center h-[100%] gap-6"
             hx-post="/api/qrcode2"
-            hx-include="#wallet2,#amount2,#apptype2"
+            hx-include="#wallet2,#amount2,#apptype2,#tokentype2"
             hx-target="#qrcode2"
           >
             <fieldset class="fieldset px-6">
@@ -191,6 +204,14 @@
                 placeholder="0x123...789"
                 required
               />
+              <input
+                id="tokentype2"
+                name="tokentype2"
+                type="text"
+                hidden
+                class="opacity-0"
+                value="usdt"
+              />
               <div class="my-2 mx-auto text-center">
                 Your QR code shows up below
                 <div
@@ -198,7 +219,7 @@
                   class="h-[256px] w-[256px] border-1 rounded-md"
                 ></div>
               </div>
-              <button class="btn btn-secondary" type="submit">QRCODE</button>
+              <button class="btn btn-accent" type="submit">QRCODE</button>
             </fieldset>
           </form>
         </div>
