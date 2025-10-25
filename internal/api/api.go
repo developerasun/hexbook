@@ -53,15 +53,17 @@ func RenderQrCode(ctx *gin.Context) {
 	wallet := ctx.PostForm("wallet")
 	amount := ctx.PostForm("amount")
 	appType := ctx.PostForm("apptype")
+	tokenType := ctx.PostForm("tokentype")
 
 	log.Println("app type: ", appType)
 	log.Println("amount: ", amount)
+	log.Println("tokentype: ", tokenType)
 
 	if len(wallet) == 0 {
 		log.Fatalln("RenderQrCode:len(wallet): empty wallet from client")
 	}
 
-	filename := pkg.GenerateQrCode(appType, wallet, amount)
+	filename := pkg.GenerateQrCode(appType, wallet, amount, tokenType)
 
 	_html := fmt.Sprintf(`<div><img src="%s" alt="qrcode"/></div>`, "/assets/qrcode/"+filename)
 	ctx.Writer.WriteHeader(http.StatusOK)
@@ -89,15 +91,17 @@ func RenderQrCode2(ctx *gin.Context) {
 	wallet := ctx.PostForm("wallet2")
 	amount := ctx.PostForm("amount2")
 	appType := ctx.PostForm("apptype2")
+	tokenType := ctx.PostForm("tokentype2")
 
-	log.Println("app type2: ", appType)
+	log.Println("apptype2: ", appType)
 	log.Println("amount2: ", amount)
+	log.Println("tokentype2: ", tokenType)
 
 	if len(wallet) == 0 {
 		log.Fatalln("RenderQrCode2:len(wallet): empty wallet from client")
 	}
 
-	filename := pkg.GenerateQrCode(appType, wallet, amount)
+	filename := pkg.GenerateQrCode(appType, wallet, amount, tokenType)
 
 	_html := fmt.Sprintf(`<div><img src="%s" alt="qrcode"/></div>`, "/assets/qrcode/"+filename)
 	ctx.Writer.WriteHeader(http.StatusOK)

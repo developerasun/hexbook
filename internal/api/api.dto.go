@@ -13,13 +13,15 @@ type FetchDummyDataResponse struct {
 }
 
 type QRCodeDataDto struct {
-	Wallet  string `form:"wallet" binding:"required"`
-	Amount  string `form:"amount" binding:"required"`
-	AppType string `form:"apptype" binding:"required"`
+	Wallet    string `form:"wallet" binding:"required"`
+	Amount    string `form:"amount" binding:"required"`
+	AppType   string `form:"apptype" binding:"required"`
+	TokenType string `form:"tokentype" binding:"required"`
 }
 
 type QRCodeDataDto2 struct {
-	Wallet  string `form:"wallet2" binding:"required"`
-	Amount  string `form:"amount2" binding:"required"`
-	AppType string `form:"apptype2" binding:"required"`
+	Wallet    string `form:"wallet2" binding:"required"`
+	Amount    string `form:"amount2" binding:"required"`
+	AppType   string `form:"apptype2" binding:"required"`
+	TokenType string `form:"tokentype2" binding:"required"`
 }
