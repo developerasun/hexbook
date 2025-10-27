@@ -51,14 +51,14 @@ func BuildBaseUrlByAppType(appType string) string {
 @example1 eth
 https://metamask.app.link/send/pay-0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1?value=1e15
 
-@example2 erc20
+@example2 erc20(usdt)
 https://metamask.app.link/send/pay-0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1/transfer?address=0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11&uint256=1e6
 
 @example3
 https://metamask.app.link/send/0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1?value=1e15
 
 @example4
-https://metamask.app.link/send/0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1/transfer?address=0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11&uint256=1e6
+https://metamask.app.link/send/0x5a27fdA4A09B3feF34c5410de1c5F3497B8EBa11@1/transfer?address=0x7dBF026bd945295b2b492458FcA47Ed503F6e45F&uint256=1e6
 */
 func BuildQRCodeDeeplink(qd QRCodeData, option *UriOption) string {
 	baseUrl := BuildBaseUrlByAppType(qd.AppType)
@@ -66,32 +66,41 @@ func BuildQRCodeDeeplink(qd QRCodeData, option *UriOption) string {
 
 	if qd.AppType == "metamask" {
 		switch qd.TokenType {
-		case "eth":
+		case "ether":
 			if option != nil {
 				// @dev build eip681 uri with `pay` prefix
 				deeplink = fmt.Sprintf("%s/%s-%s@%d?value=%s", baseUrl, option.Prefix, qd.Wallet, qd.ChainId, qd.Amount)
 			} else {
 				deeplink = fmt.Sprintf("%s/%s@%d?value=%s", baseUrl, qd.Wallet, qd.ChainId, qd.Amount)
 			}
-		case "erc20":
+		case "usdt":
 			if option != nil {
 				// @dev build eip681 uri with `pay` prefix
-				deeplink = fmt.Sprintf("%s/%s-%s@%d/transfer?address=%s&uint256=%s", baseUrl, option.Prefix, qd.Wallet, qd.ChainId, qd.Wallet, qd.Amount)
+				deeplink = fmt.Sprintf("%s/%s-%s@%d/transfer?address=%s&uint256=%s", baseUrl, option.Prefix, constant.ETH_USDT_ADDRESS, qd.ChainId, qd.Wallet, qd.Amount)
 			} else {
-				deeplink = fmt.Sprintf("%s/%s@%d/transfer?address=%s&uint256=%s", baseUrl, qd.Wallet, qd.ChainId, qd.Wallet, qd.Amount)
+				deeplink = fmt.Sprintf("%s/%s@%d/transfer?address=%s&uint256=%s", baseUrl, constant.ETH_USDT_ADDRESS, qd.ChainId, qd.Wallet, qd.Amount)
 			}
 
 		default:
-			error := errors.New("BuildQRCodeDeeplink.go: unsupported token type")
-			log.Fatalln(error.Error())
+			error := errors.New("BuildQRCodeDeeplink.go: unsupported token type: ")
+			log.Fatalln(error.Error() + qd.TokenType)
 		}
 	}
 
 	if qd.AppType == "trust" {
-		deeplink = fmt.Sprintf("%s:%s@%d?value=%s", baseUrl, qd.Wallet, qd.ChainId, qd.Amount)
+		switch qd.TokenType {
+		case "ether":
+			deeplink = fmt.Sprintf("%s:%s@%d?value=%s", baseUrl, qd.Wallet, qd.ChainId, toWei(qd.Amount, qd.TokenType))
+		case "usdt":
+			// TODO replace hardcoded tether value
+			baseUrl = "https://link.trustwallet.com/send?coin=60"
+			deeplink = fmt.Sprintf("%s&address=%s&amount=%s&token_id=%s", baseUrl, qd.Wallet, qd.Amount, constant.ETH_USDT_ADDRESS)
+		}
 	}
 
-	log.Println("apptype: ", qd.AppType, " deeplink: ", deeplink)
+	log.Println("apptype: ", qd.AppType)
+	log.Println("deeplink: ", deeplink)
+	log.Println("tokentype: ", qd.TokenType)
 
 	return deeplink
 }
@@ -141,13 +150,19 @@ func validateDuplicate(address string, appType string) bool {
 /*
 @return e.g `1000000000000000000`
 */
-func toWei(_amount string) string {
+func toWei(_amount string, _tokenType string) string {
 	amount, err := decimal.NewFromString(_amount)
 
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	plain := decimal.NewFromFloat(constant.ETH_DECIMAL)
+
+	targetDecimal := constant.ETH_DECIMAL
+	if _tokenType == "usdt" {
+		targetDecimal = constant.USDT_DECIMAL
+	}
+
+	plain := decimal.NewFromFloat(targetDecimal)
 	calculated := amount.Mul(plain)
 
 	return calculated.String()
@@ -156,15 +171,20 @@ func toWei(_amount string) string {
 /*
 @return e.g `N*1e18`
 */
-func toWeiAsExponent(_amount string) string {
-	toFloat, _ := strconv.ParseFloat(_amount, 64)
-	target := fmt.Sprintf("%.e", toFloat*constant.ETH_DECIMAL)
+func toWeiAsExponent(_amount string, _tokenType string) string {
+	targetDecimal := constant.ETH_DECIMAL
+	if _tokenType == "usdt" {
+		targetDecimal = constant.USDT_DECIMAL
+	}
 
-	converted := strings.Replace(target, "+", "", 1)
+	toFloat, _ := strconv.ParseFloat(_amount, 64)
+	target := fmt.Sprintf("%.e", toFloat*targetDecimal)
+
+	converted := strings.Replace(target, "+0", "", 1)
 	return converted
 }
 
-func GenerateQrCode(appType string, wallet string, amount string) string {
+func GenerateQrCode(appType string, wallet string, amount string, tokenType string) string {
 	validateAppType(appType)
 	validateAddress(wallet)
 	isExisting := validateDuplicate(wallet, appType)
@@ -172,20 +192,19 @@ func GenerateQrCode(appType string, wallet string, amount string) string {
 	var deeplink string
 	if appType == "metamask" {
 		deeplink = BuildQRCodeDeeplink(QRCodeData{
-			AppType: "metamask",
-			Wallet:  wallet,
-			ChainId: 1,
-			// TODO replace hardcoded decimals
-			Amount:    toWeiAsExponent(amount), // hardcoded
-			TokenType: "eth",
+			AppType:   "metamask",
+			Wallet:    wallet,
+			ChainId:   1,
+			Amount:    toWeiAsExponent(amount, tokenType), // hardcoded
+			TokenType: tokenType,
 		}, nil)
 	} else {
 		deeplink = BuildQRCodeDeeplink(QRCodeData{
 			AppType:   "trust",
 			Wallet:    wallet,
 			ChainId:   1,
-			Amount:    toWei(amount), // hardcoded
-			TokenType: "eth",
+			Amount:    amount, // hardcoded
+			TokenType: tokenType,
 		}, nil)
 	}
 
