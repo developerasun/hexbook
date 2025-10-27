@@ -92,8 +92,9 @@ func BuildQRCodeDeeplink(qd QRCodeData, option *UriOption) string {
 		case "ether":
 			deeplink = fmt.Sprintf("%s:%s@%d?value=%s", baseUrl, qd.Wallet, qd.ChainId, qd.Amount)
 		case "usdt":
-			// TODO
-			deeplink = fmt.Sprintf("%s/%s@%d/transfer?address=%s&uint256=%s", baseUrl, qd.Wallet, qd.ChainId, constant.ETH_USDT_ADDRESS, qd.Amount)
+			// TODO replace hardcoded tether value
+			baseUrl = "https://link.trustwallet.com/send?coin=60"
+			deeplink = fmt.Sprintf("%s&address=%s&amount=%s&token_id=%s", baseUrl, qd.Wallet, "10.0", constant.ETH_USDT_ADDRESS)
 		}
 	}
 
