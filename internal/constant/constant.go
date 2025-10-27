@@ -10,5 +10,5 @@ const (
 	FilePermExecutable                     = 0755
 	ETH_DECIMAL                    float64 = 1e18
 	USDT_DECIMAL                   float64 = 1e6
-	ETH_USDT_ADDRESS                       = "0x7dBF026bd945295b2b492458FcA47Ed503F6e45F" // eth mainnet
+	ETH_USDT_ADDRESS                       = "0xdAC17F958D2ee523a2206206994597C13D831ec7" // eth mainnet
 )

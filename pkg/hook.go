@@ -76,9 +76,9 @@ func BuildQRCodeDeeplink(qd QRCodeData, option *UriOption) string {
 		case "usdt":
 			if option != nil {
 				// @dev build eip681 uri with `pay` prefix
-				deeplink = fmt.Sprintf("%s/%s-%s@%d/transfer?address=%s&uint256=%s", baseUrl, option.Prefix, qd.Wallet, qd.ChainId, constant.ETH_USDT_ADDRESS, qd.Amount)
+				deeplink = fmt.Sprintf("%s/%s-%s@%d/transfer?address=%s&uint256=%s", baseUrl, option.Prefix, constant.ETH_USDT_ADDRESS, qd.ChainId, qd.Wallet, qd.Amount)
 			} else {
-				deeplink = fmt.Sprintf("%s/%s@%d/transfer?address=%s&uint256=%s", baseUrl, qd.Wallet, qd.ChainId, constant.ETH_USDT_ADDRESS, qd.Amount)
+				deeplink = fmt.Sprintf("%s/%s@%d/transfer?address=%s&uint256=%s", baseUrl, constant.ETH_USDT_ADDRESS, qd.ChainId, qd.Wallet, qd.Amount)
 			}
 
 		default:
@@ -97,7 +97,9 @@ func BuildQRCodeDeeplink(qd QRCodeData, option *UriOption) string {
 		}
 	}
 
-	log.Println("apptype: ", qd.AppType, " deeplink: ", deeplink)
+	log.Println("apptype: ", qd.AppType)
+	log.Println("deeplink: ", deeplink)
+	log.Println("tokentype: ", qd.TokenType)
 
 	return deeplink
 }
@@ -177,7 +179,7 @@ func toWeiAsExponent(_amount string, _tokenType string) string {
 	toFloat, _ := strconv.ParseFloat(_amount, 64)
 	target := fmt.Sprintf("%.e", toFloat*targetDecimal)
 
-	converted := strings.Replace(target, "+", "", 1)
+	converted := strings.Replace(target, "+0", "", 1)
 	return converted
 }
 
