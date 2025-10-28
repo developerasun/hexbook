@@ -92,7 +92,6 @@ func BuildQRCodeDeeplink(qd QRCodeData, option *UriOption) string {
 		case "ether":
 			deeplink = fmt.Sprintf("%s:%s@%d?value=%s", baseUrl, qd.Wallet, qd.ChainId, toWei(qd.Amount, qd.TokenType))
 		case "usdt":
-			// TODO replace hardcoded tether value
 			baseUrl = "https://link.trustwallet.com/send?coin=60"
 			deeplink = fmt.Sprintf("%s&address=%s&amount=%s&token_id=%s", baseUrl, qd.Wallet, qd.Amount, constant.ETH_USDT_ADDRESS)
 		}
@@ -105,19 +104,24 @@ func BuildQRCodeDeeplink(qd QRCodeData, option *UriOption) string {
 	return deeplink
 }
 
-func validateAppType(appType string) {
+func validateAppType(appType string) error {
 	if appType != "metamask" && appType != "trust" {
-		log.Fatalln("validateAppType: invalid wallet app type")
+		error := errors.New("validateAppType: invalid wallet app type")
+		return error
 	}
+
+	return nil
 }
 
-func validateAddress(address string) {
+func validateAddress(address string) error {
 	_, found := strings.CutPrefix(address, "0x")
 
 	if !found || len(address) != 42 {
 		error := errors.New("validateAddress.go: invalid ethereum address")
-		log.Fatalln(error.Error(), "| address length: ", len(address))
+		return error
 	}
+
+	return nil
 }
 
 func validateDuplicate(address string, appType string) bool {
@@ -184,9 +188,15 @@ func toWeiAsExponent(_amount string, _tokenType string) string {
 	return converted
 }
 
-func GenerateQrCode(appType string, wallet string, amount string, tokenType string) string {
-	validateAppType(appType)
-	validateAddress(wallet)
+func GenerateQrCode(appType string, wallet string, amount string, tokenType string) (string, error) {
+	if appTypeErr := validateAppType(appType); appTypeErr != nil {
+		return "", appTypeErr
+	}
+
+	if addrTypeErr := validateAddress(wallet); addrTypeErr != nil {
+		return "", addrTypeErr
+	}
+
 	isExisting := validateDuplicate(wallet, appType)
 
 	var deeplink string
@@ -212,28 +222,28 @@ func GenerateQrCode(appType string, wallet string, amount string, tokenType stri
 
 	if !isExisting {
 		log.Println("GenerateQrCode: detecting new entry for qrcode, starting encoding...", filename)
-		png, err := qrcode.Encode(deeplink, qrcode.Medium, 256)
+		png, eErr := qrcode.Encode(deeplink, qrcode.Medium, 256)
 
-		if err != nil {
-			log.Fatalln(err.Error())
+		if eErr != nil {
+			return filename, eErr
 		}
 
 		wd, gErr := os.Getwd()
 
 		if gErr != nil {
-			log.Fatalln(gErr.Error())
+			return filename, gErr
 		}
 
 		targetPath := strings.Join([]string{wd, "assets", "qrcode", filename}, "/")
 		wErr := os.WriteFile(targetPath, png, constant.FilePermUserReadWriteGroupRead)
 
 		if wErr != nil {
-			log.Fatalln(wErr.Error())
+			return filename, wErr
 		}
 
-		return filename
+		return filename, nil
 	}
 
 	log.Println("GenerateQrCode: detecting existing entry for qrcode, terminating...", filename)
-	return filename
+	return filename, nil
 }
