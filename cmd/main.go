@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -21,13 +23,13 @@ import (
 // @description hexbook backend API documentation
 // @BasePath /
 func main() {
-	dir, gErr := os.Getwd()
+	wd, gErr := os.Getwd()
 
 	if gErr != nil {
 		log.Fatalln(gErr.Error())
 	}
 
-	envPath := strings.Join([]string{dir, "/", ".run.env"}, "")
+	envPath := strings.Join([]string{wd, "/", ".run.env"}, "")
 	log.Println("main.go: envPath: " + envPath)
 
 	hasError := env.Load(envPath)
@@ -44,16 +46,11 @@ func main() {
 	docs.SwaggerInfo.BasePath = ""
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-	wd, gErr := os.Getwd()
-
-	if gErr != nil {
-		log.Fatalln(gErr.Error())
-	}
-
 	staticPath := strings.Join([]string{wd, "assets"}, "/")
 
 	router.Static("/assets", staticPath)
 	router.LoadHTMLGlob("templates/*")
+	router.Use(ErrorHandler())
 	router.Use(gin.Recovery())
 
 	root := router.Group(constant.ROUTE_ROOT)
@@ -66,4 +63,24 @@ func main() {
 
 	router.Run(":" + os.Getenv("PORT"))
 	log.Println("main.go: router started")
+}
+
+// ErrorHandler captures errors and returns a consistent JSON error response
+func ErrorHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Next() // Step1: Process the request first.
+
+		// Step2: Check if any errors were added to the context
+		if len(c.Errors) > 0 {
+			// Step3: Use the last error
+			err := c.Errors.Last().Err
+
+			// Step4: Respond with a generic error message
+			_html := fmt.Sprintf(`<div class="text-error">%s</div>`, err.Error())
+			c.Writer.WriteHeader(http.StatusOK)
+			c.Writer.Write([]byte(_html))
+		}
+
+		// Any other steps if no errors are found
+	}
 }

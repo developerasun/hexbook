@@ -9,15 +9,17 @@ Crypto-freindly.
 
 <div align="center">
 
-<img src="./docs/readme/mvp.png" width="49%" />
+<img src="./docs/readme/v0.5.0.png" width="49%" />
 
 </div>
 
 ## Feature
 
-- convert Ethereum mainnet address to qrcode
-- issue tipping invoice with the qrcode
-- eip681 compatible(trust wallet tested)
+- 💸 Pick and go: Support the most popular crypto `Ether`, `USDT`
+- 🔋 Batteries included: Use as it is on web
+- 🔪 Battle-tested: Unit test with `testify` and Hands-on test with `Metamask`, `Trust Wallet`
+- 💾 Portable and handy: Provide Docker image
+- 🍰 No brainer: No complicated SPA - just 1 HTML file
 
 ## Tech stack
 
@@ -25,5 +27,6 @@ Crypto-freindly.
 | ------- | ---------------------------- |
 | Client  | `htmx`, `tailwind`, `daiyui` |
 | Server  | `gin`, `swagger`             |
+| Infra   | `Docker`, `docker swarm`     |
 
 ---

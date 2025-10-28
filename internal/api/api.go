@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -46,7 +47,8 @@ func RenderQrCode(ctx *gin.Context) {
 	var qrcodeData QRCodeDataDto
 
 	if err := ctx.ShouldBind(&qrcodeData); err != nil {
-		log.Fatalln("RenderQrCode: ", err.Error())
+		ctx.Error(err)
+		return
 	}
 	log.Println("qrcodeData: ", qrcodeData)
 
@@ -60,12 +62,19 @@ func RenderQrCode(ctx *gin.Context) {
 	log.Println("tokentype: ", tokenType)
 
 	if len(wallet) == 0 {
-		log.Fatalln("RenderQrCode:len(wallet): empty wallet from client")
+		ctx.Error(errors.New("RenderQrCode:len(wallet): empty wallet from client"))
+		return
 	}
 
-	filename := pkg.GenerateQrCode(appType, wallet, amount, tokenType)
+	filename, err := pkg.GenerateQrCode(appType, wallet, amount, tokenType)
 
-	_html := fmt.Sprintf(`<div><img src="%s" alt="qrcode"/></div>`, "/assets/qrcode/"+filename)
+	var _html string
+	if err != nil {
+		_html = fmt.Sprintf(`<div class="text-error">%s</div>`, err.Error())
+	} else {
+		_html = fmt.Sprintf(`<div><img src="%s" alt="qrcode"/></div>`, "/assets/qrcode/"+filename)
+	}
+
 	ctx.Writer.WriteHeader(http.StatusOK)
 	ctx.Writer.Write([]byte(_html))
 }
@@ -84,7 +93,8 @@ func RenderQrCode2(ctx *gin.Context) {
 	var qrcodeData QRCodeDataDto2
 
 	if err := ctx.ShouldBind(&qrcodeData); err != nil {
-		log.Fatalln("RenderQrCode2: ", err.Error())
+		ctx.Error(err)
+		return
 	}
 	log.Println("qrcodeData2: ", qrcodeData)
 
@@ -98,12 +108,19 @@ func RenderQrCode2(ctx *gin.Context) {
 	log.Println("tokentype2: ", tokenType)
 
 	if len(wallet) == 0 {
-		log.Fatalln("RenderQrCode2:len(wallet): empty wallet from client")
+		ctx.Error(errors.New("RenderQrCode2:len(wallet): empty wallet from client"))
+		return
 	}
 
-	filename := pkg.GenerateQrCode(appType, wallet, amount, tokenType)
+	filename, err := pkg.GenerateQrCode(appType, wallet, amount, tokenType)
 
-	_html := fmt.Sprintf(`<div><img src="%s" alt="qrcode"/></div>`, "/assets/qrcode/"+filename)
+	var _html string
+	if err != nil {
+		_html = fmt.Sprintf(`<div>%s</div`, err.Error())
+	} else {
+		_html = fmt.Sprintf(`<div><img src="%s" alt="qrcode"/></div>`, "/assets/qrcode/"+filename)
+	}
+
 	ctx.Writer.WriteHeader(http.StatusOK)
 	ctx.Writer.Write([]byte(_html))
 }
