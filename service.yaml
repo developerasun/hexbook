@@ -12,6 +12,7 @@ services:
       - "3010:3010"
     volumes:
       - ./.run.env:/hexbook/.run.env
+      - ./assets:/hexbook/assets
       - ./_volume/_logs/hexbook_backend:/logs
     networks:
       - webapp
