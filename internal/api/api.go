@@ -116,7 +116,7 @@ func RenderQrCode2(ctx *gin.Context) {
 
 	var _html string
 	if err != nil {
-		_html = fmt.Sprintf(`<div>%s</div`, err.Error())
+		_html = fmt.Sprintf(`<div class="text-error">%s</div`, err.Error())
 	} else {
 		_html = fmt.Sprintf(`<div><img src="%s" alt="qrcode"/></div>`, "/assets/qrcode/"+filename)
 	}
