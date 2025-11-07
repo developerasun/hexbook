@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
+	constant "github.com/developerasun/hexbook/internal/constant"
 	"github.com/google/uuid"
-	constant "github.com/hexbook/internal/constant"
 	"github.com/shopspring/decimal"
 	qrcode "github.com/skip2/go-qrcode"
 )

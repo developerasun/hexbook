@@ -7,11 +7,11 @@ import (
 	"os"
 	"strings"
 
+	apiController "github.com/developerasun/hexbook/internal/api"
+	"github.com/developerasun/hexbook/internal/constant"
 	"github.com/gin-gonic/gin"
-	apiController "github.com/hexbook/internal/api"
-	"github.com/hexbook/internal/constant"
 
-	docs "github.com/hexbook/docs"
+	docs "github.com/developerasun/hexbook/docs"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 

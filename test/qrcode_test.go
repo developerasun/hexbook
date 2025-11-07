@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 
-	constant "github.com/hexbook/internal/constant"
+	constant "github.com/developerasun/hexbook/internal/constant"
 	qrcode "github.com/skip2/go-qrcode"
 )
 

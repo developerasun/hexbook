@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 
+	pkg "github.com/developerasun/hexbook/pkg"
 	"github.com/gin-gonic/gin"
-	pkg "github.com/hexbook/pkg"
 )
 
 // Health godoc

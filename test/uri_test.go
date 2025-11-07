@@ -10,7 +10,7 @@ import (
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 
-	hook "github.com/hexbook/pkg"
+	hook "github.com/developerasun/hexbook/pkg"
 )
 
 func TestQRCodeURI(t *testing.T) {
