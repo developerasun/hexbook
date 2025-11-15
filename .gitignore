@@ -43,3 +43,5 @@ docs/swagger.yaml
 _legacy
 TASK.md
 todo.md
+
+assets/qrcode/*
