@@ -1,22 +1,18 @@
 networks:
-  webapp:
-    driver: overlay
-  common:
+  side:
     driver: overlay
 
 services:
-  backend:
-    image: hexbook-backend:latest
-    # open ports in overlay network to communicate each other
+  hexbook:
+    image: hub-hexbook:latest
     ports:
-      - "3010:3010"
+      - "3016:3016"
     volumes:
       - ./.run.env:/hexbook/.run.env
       - ./assets:/hexbook/assets
       - ./_volume/_logs/hexbook_backend:/logs
     networks:
-      - webapp
-      - common
+      - side
     deploy:
       mode: replicated
       replicas: 1
@@ -27,33 +23,8 @@ services:
         window: 60s
       resources:
         reservations:
-          cpus: "0.5"
-          memory: 512M
+          cpus: "0.01"
+          memory: 128M
         limits:
-          cpus: "1"
-          memory: 1024M
-  servertunnel:
-    image: cloudflare/cloudflared:latest
-    env_file: ".run.env"
-    command: tunnel --no-autoupdate run
-    volumes:
-      - ./.run.env/:/.run.env
-      # - ./_volume/_logs/hexbook_tunnel:/logs
-    networks:
-      - webapp
-      - common
-    deploy:
-      mode: replicated
-      replicas: 1
-      restart_policy:
-        condition: any # no always policy on swarm mode
-        delay: 5s
-        max_attempts: 3
-        window: 60s
-      resources:
-        reservations:
-          cpus: "0.5"
-          memory: 512M
-        limits:
-          cpus: "1"
-          memory: 1024M
+          cpus: "0.01"
+          memory: 128M
